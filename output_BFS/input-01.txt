@@ -1,2 +1,7 @@
-Error
-Error parsing file input\input-01.txt: invalid literal for int() with base 10: 'A'
+Breadth-First Search
+Steps: 16
+Total Weight Pushed: 398
+Nodes Generated: 7322
+Time Taken: 0.1760 seconds
+Memory Used: 2014.02 KB
+uulDdrLrurRRRurD

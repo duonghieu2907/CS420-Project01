@@ -1,2 +1,1 @@
-Error
-Error parsing file input\input-04.txt: invalid literal for int() with base 10: 'A'
+No solution found

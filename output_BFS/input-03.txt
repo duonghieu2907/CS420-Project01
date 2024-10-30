@@ -1,2 +1,2 @@
 Error
-Error parsing file input\input-03.txt: invalid literal for int() with base 10: 'A'
+Error: Number of stones does not match weights in input\input-03.txt.
