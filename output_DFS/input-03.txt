@@ -1,0 +1,2 @@
+Error
+Error: Number of stones does not match weights in input\input-03.txt.
