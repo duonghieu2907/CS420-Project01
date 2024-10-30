@@ -142,6 +142,7 @@ if __name__ == "__main__":
         input_path = os.path.join(input_folder, input_file)
         
         if os.path.isfile(input_path) and input_file.endswith(".txt"):
+
             try:
 
                 weights, grid, error_message = parse_input(input_path)
@@ -178,4 +179,5 @@ if __name__ == "__main__":
                 print(f"I/O error with file {input_path}: {e}")
             except Exception as e:
                 print(f"An unexpected error occurred while processing {input_file}: {e}")
+
 
