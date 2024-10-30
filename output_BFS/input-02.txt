@@ -1,0 +1,2 @@
+Error
+Error parsing file input\input-02.txt: invalid literal for int() with base 10: 'A'
