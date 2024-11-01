@@ -1,10 +1,6 @@
 from UCS_implementation import *
 
 
-
-
-
-
 def DFS_Search(weight: object, grid: object) -> object:
     initial_state = find_initial_state(grid)
     visited = set()
