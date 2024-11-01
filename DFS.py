@@ -1,5 +1,4 @@
-from UCS_implementation import *
-
+from search_utility import *
 
 def DFS_Search(weight: object, grid: object) -> object:
     initial_state = find_initial_state(grid)
@@ -83,5 +82,3 @@ if __name__ == "__main__":
                 print(f"I/O error with file {input_path}: {e}")
             except Exception as e:
                 print(f"An unexpected error occurred while processing {input_file}: {e}")
-
-
