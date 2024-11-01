@@ -1,0 +1,7 @@
+Breadth-First Search
+Steps: 16
+Total Weight Pushed: 398
+Nodes Generated: 7322
+Time Taken: 0.1382 seconds
+Memory Used: 2012.35 KB
+uulDdrLrurRRRurD
