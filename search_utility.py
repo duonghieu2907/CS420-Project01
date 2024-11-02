@@ -43,18 +43,22 @@ def find_initial_state(grid):
                 ares_pos = (i, j)
             elif cell == '$':
                 stones.append((i, j))
+            elif cell == '-':  # Player and Goal
+                ares_pos = (i, j)
+            elif cell == '+':  # Box and Goal
+                stones.append((i, j))
     return State(ares_pos, stones, 0)
 
 
-def is_valid_move(x, y, grid):
-    return 0 <= x < len(grid) and 0 <= y < len(grid[0]) and grid[x][y] not in ['#', '$']
+def is_valid_move(x, y, grid, stones):
+    return 0 <= x < len(grid) and 0 <= y < len(grid[0]) and grid[x][y] != '#' and (x, y) not in stones # Check if within bounds and not a wall or stone, however, the checking for stone is incorrect.
 
 
-def push_stone(ares_pos, stone_pos, grid):
+def push_stone(ares_pos, stone_pos, grid, stones):
     x, y = stone_pos
     dx, dy = x - ares_pos[0], y - ares_pos[1]
     new_stone_pos = (x + dx, y + dy)
-    if is_valid_move(new_stone_pos[0], new_stone_pos[1], grid):
+    if is_valid_move(new_stone_pos[0], new_stone_pos[1], grid, stones):
         return new_stone_pos
     return None
 
@@ -62,7 +66,7 @@ def push_stone(ares_pos, stone_pos, grid):
 def goal_state(state, grid):
     for stone_pos in state.stones:
         x, y = stone_pos
-        if grid[x][y] != '.':
+        if grid[x][y] not in {'.', '-', '+'}:
             return False
     return True
 
@@ -75,12 +79,12 @@ def get_successors(state, weights, grid):
     for dx, dy, move, push in directions:
         new_ares_pos = (ares_x + dx, ares_y + dy)
 
-        if is_valid_move(new_ares_pos[0], new_ares_pos[1], grid):
+        if is_valid_move(new_ares_pos[0], new_ares_pos[1], grid, state.stones):
             successors.append(State(new_ares_pos, state.stones[:], state.cost + 1, state.path + move))
 
         for i, stone_pos in enumerate(state.stones):
             if stone_pos == new_ares_pos:
-                new_stone_pos = push_stone(state.ares_pos, stone_pos, grid)
+                new_stone_pos = push_stone(state.ares_pos, stone_pos, grid, state.stones)
                 if new_stone_pos:
                     new_stones = state.stones[:]
                     new_stones[i] = new_stone_pos
