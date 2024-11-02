@@ -18,11 +18,14 @@ class State:
 def parse_input(file):
     try:
         with open(file, 'r') as f:
+            # Parse weights, which should be on the first line
             weights = list(map(int, f.readline().strip().split()))
-            grid = [list(line.strip()) for line in f.readlines()]
+            
+            # Parse the grid, keeping leading and trailing whitespace in each row
+            grid = [list(line.rstrip('\n')) for line in f.readlines()]
         
-        # Validate grid for number of stones
-        stone_count = sum(row.count('$') for row in grid)
+        # Validate grid for the number of stones
+        stone_count = sum(row.count('$') + row.count('+') for row in grid)
         if len(weights) != stone_count:
             error_message = f"Error: Number of stones does not match weights in {file}."
             return None, None, error_message
