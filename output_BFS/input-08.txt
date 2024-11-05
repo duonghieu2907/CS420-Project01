@@ -1,2 +1,7 @@
-Error
-Error: Number of stones does not match weights in input\input-08.txt.
+Breadth-First Search
+Steps: 34
+Total Weight Pushed: 212
+Nodes Generated: 823859
+Time Taken: 61.0925 seconds
+Memory Used: 277519.88 KB
+RurrddddlDRuuuuLLLrdRDrddlLdllUUdR
