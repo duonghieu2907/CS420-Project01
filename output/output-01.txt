@@ -1,3 +1,8 @@
-Depth-First Search
-An unexpected error occurred while processing input-01.txt: name 'weights' is not defined
+A Star Search
+Steps: 16
+Total Weight Pushed: 398
+Nodes Generated: 1471
+Time Taken: 0.2554 seconds
+Memory Used: 723.61 KB
+uLulDrrrRurDldRR
 

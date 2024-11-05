@@ -1,3 +1,3 @@
-Depth-First Search
-An unexpected error occurred while processing input-02.txt: name 'weights' is not defined
+A Star Search
+An unexpected error occurred while processing input-02.txt: The number of stones does not match the number of switches.
 

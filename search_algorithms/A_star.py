@@ -85,7 +85,7 @@ def heuristic_function(state, weights, grid):
     total_weighted_distance = sum(cost_matrix[i][j] for i, j in zip(row_ind, col_ind))
 
     # Additional cost: Sum of Manhattan distances from Ares to each stone
-    ares_to_stones_distance = sum(manhattan_distance(ares_pos, stone) for stone in stones)
+    ares_to_stones_distance = max(manhattan_distance(ares_pos, stone) for stone in stones)
 
     # Combine the costs
     total_cost = total_weighted_distance + ares_to_stones_distance
