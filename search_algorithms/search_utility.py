@@ -2,6 +2,7 @@ import os
 import heapq
 import time
 import tracemalloc
+from typing import List, Tuple, Dict, Any
 
 
 class State:
@@ -37,7 +38,7 @@ def parse_input(file):
         return None, None, error_message
     
     
-def find_initial_state(grid):
+def find_initial_state(grid) -> State:
     ares_pos = None
     stones = []
     for i, row in enumerate(grid):
@@ -74,7 +75,7 @@ def goal_state(state, grid):
     return True
 
 
-def get_successors(state, weights, grid):
+def get_successors(state, weights, grid) -> List[State]:
     successors = []
     ares_x, ares_y = state.ares_pos
     directions = [(-1, 0, 'u', 'U'), (1, 0, 'd', 'D'), (0, -1, 'l', 'L'), (0, 1, 'r', 'R')]

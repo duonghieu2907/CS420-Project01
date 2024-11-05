@@ -1,1 +1,1 @@
-No solution found
+Breadth-First Search

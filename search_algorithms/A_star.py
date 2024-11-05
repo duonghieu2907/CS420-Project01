@@ -1,7 +1,7 @@
-from UCS import *
+from .search_utility import *
 from scipy.optimize import linear_sum_assignment
 
-class CustomizeState (State):
+class CustomizeState(State):
     def __init__(self, ares_pos, stones, cost, path=""):
         super().__init__(ares_pos, stones, cost, path)
         self.heuristic = None
@@ -15,7 +15,7 @@ def manhattan_distance(p1, p2):
 
 def a_star(weights, grid):
     initial_state = find_initial_state(grid)
-    initial_state = CustomizeState(initial_state)
+    initial_state = CustomizeState(initial_state.ares_pos, initial_state.stones, initial_state.cost, initial_state.path)
     initial_state.setHeuristic(heuristic_function(initial_state, weights, grid))
     initial_state.f_cost = initial_state.cost + initial_state.heuristic  # f_cost = g + h
 
@@ -44,6 +44,7 @@ def a_star(weights, grid):
         visited.add(state_key)
 
         for successor in get_successors(current_state, weights, grid):
+            successor = CustomizeState(successor.ares_pos, successor.stones, successor.cost, successor.path)
             successor.setHeuristic(heuristic_function(successor, weights, grid))
             successor.f_cost = successor.cost + successor.heuristic
             successor_key = (successor.ares_pos, tuple(successor.stones))
@@ -62,7 +63,7 @@ def heuristic_function(state, weights, grid):
         return 0
     stones = state.stones  # Positions of stones (x1, x2, ..., xn)
     switches = [(i, j) for i, row in enumerate(grid) for j, cell in enumerate(row) if
-                cell == '.']  # Positions of switches (y1, y2, ..., yn)
+                cell == '.' or cell == '+']  # Positions of switches (y1, y2, ..., yn)
     ares_pos = state.ares_pos  # Position of Ares
 
     if len(stones) != len(switches):
@@ -84,7 +85,7 @@ def heuristic_function(state, weights, grid):
     total_weighted_distance = sum(cost_matrix[i][j] for i, j in zip(row_ind, col_ind))
 
     # Additional cost: Sum of Manhattan distances from Ares to each stone
-    ares_to_stones_distance = sum(manhattan_distance(ares_pos, stone) for stone in stones)
+    ares_to_stones_distance = max(manhattan_distance(ares_pos, stone) for stone in stones)
 
     # Combine the costs
     total_cost = total_weighted_distance + ares_to_stones_distance
@@ -92,51 +93,54 @@ def heuristic_function(state, weights, grid):
     return total_cost
 
 
-if __name__ == "__main__":
-    input_folder = 'input'
-    output_folder = 'output_A_Star'
+def A_star_process_input_files(input_folder: str) -> List[Dict[str, Any]]:
+    output_data = []
 
-    # Ensure the output folder exists
-    os.makedirs(output_folder, exist_ok=True)
-
-    # Process each input file
+    # Process each input file in the folder
     for input_file in os.listdir(input_folder):
         input_path = os.path.join(input_folder, input_file)
-
+        
         if os.path.isfile(input_path) and input_file.endswith(".txt"):
+            result = {
+                "input_file": input_file,
+                "algorithm": "A Star Search",
+                "final_state": None,
+                "nodes_generated": None,
+                "time_taken": None,
+                "memory_used": None,
+                "error_message": None
+            }
 
             try:
-
+                # Parse input data
                 weights, grid, error_message = parse_input(input_path)
-
-                output_file = f"{os.path.splitext(input_file)[0]}.txt"
-
-                output_path = os.path.join(output_folder, output_file)
                 if error_message:
-                    # Write error output if there was a parsing issue
-                    try:
-                        write_error_output(output_path, error_message)
-                    except Exception as e:
-                        print(f"Error writing error message to {output_path}: {e}")
+                    # If parsing error, save the error message in the result and skip the search
+                    result["error_message"] = error_message
+                    output_data.append(result)
                     continue
+                
+                # Run A* search on the parsed data
+                final_state, nodes_generated, time_taken, memory_used = a_star(weights, grid)  # Changed to A* algorithm
+                
+                # Store results
+                result["final_state"] = final_state
+                result["nodes_generated"] = nodes_generated
+                result["time_taken"] = time_taken
+                result["memory_used"] = memory_used
+                
+                # If no solution was found, mark it in the final_state
+                if not final_state:
+                    result["final_state"] = "No solution found"
 
-                final_state, nodes_generated, time_taken, memory_used = uniform_cost_search(weights, grid)
-
-                # Write output based on search result
-                try:
-                    if final_state:
-                        write_output(output_path, "A Star Search", final_state, nodes_generated, time_taken,
-                                     memory_used)
-                    else:
-                        with open(output_path, 'w') as f:
-                            f.write("No solution found\n")
-                except Exception as e:
-                    print(f"Error writing output for {output_file}: {e}")
-
-                print(f"Processed {input_file} -> {output_file}")
             except FileNotFoundError:
-                print(f"File not found: {input_path}")
+                result["error_message"] = f"File not found: {input_path}"
             except IOError as e:
-                print(f"I/O error with file {input_path}: {e}")
+                result["error_message"] = f"I/O error with file {input_path}: {e}"
             except Exception as e:
-                print(f"An unexpected error occurred while processing {input_file}: {e}")
+                result["error_message"] = f"An unexpected error occurred while processing {input_file}: {e}"
+
+            # Append the result to the output data list
+            output_data.append(result)
+    
+    return output_data
