@@ -1,8 +1,8 @@
-Breadth-First Search
+A Star Search
 Steps: 46
 Total Weight Pushed: 100
-Nodes Generated: 11894
-Time Taken: 0.2509 seconds
-Memory Used: 2003.80 KB
-RuuuurrdLulDDDDldRRRuLdlUUUruulDDDDrdLurrrrdLL
+Nodes Generated: 9682
+Time Taken: 2.1232 seconds
+Memory Used: 2870.52 KB
+RuuuurrdLulDDDDldRRRuLdlUUUruulDDDDrdLrrurrdLL
 

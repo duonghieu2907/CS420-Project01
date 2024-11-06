@@ -13,15 +13,15 @@ if __name__ == "__main__":
     
     # Process input files with all search algorithms
     # ucs_results = UCS_process_input_files(input_folder)
-    bfs_results = BFS_process_input_files(input_folder)
+    # bfs_results = BFS_process_input_files(input_folder)
     # dfs_results = DFS_process_input_files(input_folder)
-    # a_star_results = A_star_process_input_files(input_folder)
+    a_star_results = A_star_process_input_files(input_folder)
 
-    for idx in range(len(bfs_results)):
+    for idx in range(len(a_star_results)):
         output_file = f"output-{idx + 1:02}.txt"
         output_path = os.path.join(output_folder, output_file)
         with open(output_path, 'w') as f:
-            for results in [bfs_results]:
+            for results in [a_star_results]:
                 f.write(f"{results[idx]['algorithm']}\n")
                 if results[idx]['error_message']:
                     f.write(f"{results[idx]['error_message']}\n\n")
