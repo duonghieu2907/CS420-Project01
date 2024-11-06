@@ -26,7 +26,7 @@ def parse_input(file):
             grid = [list(line.rstrip('\n')) for line in f.readlines()]
         
         # Validate grid for the number of stones
-        stone_count = sum(row.count('$') + row.count('+') for row in grid)
+        stone_count = sum(row.count('$') + row.count('*') for row in grid)
         if len(weights) != stone_count:
             error_message = f"Error: Number of stones does not match weights in {file}."
             return None, None, error_message
@@ -47,9 +47,9 @@ def find_initial_state(grid) -> State:
                 ares_pos = (i, j)
             elif cell == '$':
                 stones.append((i, j))
-            elif cell == '-':  # Player and Goal
+            elif cell == '+':  # Player and Goal
                 ares_pos = (i, j)
-            elif cell == '+':  # Box and Goal
+            elif cell == '*':  # Box and Goal
                 stones.append((i, j))
     return State(ares_pos, stones, 0)
 
@@ -70,7 +70,7 @@ def push_stone(ares_pos, stone_pos, grid, stones):
 def goal_state(state, grid):
     for stone_pos in state.stones:
         x, y = stone_pos
-        if grid[x][y] not in {'.', '-', '+'}:
+        if grid[x][y] not in {'.', '+', '*'}:
             return False
     return True
 
