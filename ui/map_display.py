@@ -28,7 +28,7 @@ def render_map(grid, page_text, additional_text=""):
 
 # Main function for displaying maps with navigation
 def map_display():
-    input_folder = "../input"
+    input_folder = "\CS420-Project01\input"
     map_files = sorted([f for f in os.listdir(input_folder) if f.endswith(".txt")])
     playing = True
     if not map_files:
@@ -61,7 +61,7 @@ def map_display():
                     current_map_idx -= 1
                     grid, no_solution_due_to_cats = load_map(os.path.join(input_folder, map_files[current_map_idx]), skip_first_line=True)
                 elif event.key == pygame.K_RETURN:  # Start simulation for chosen map
-                    output_file = f"../output/output-{current_map_idx + 1:02d}.txt"
+                    output_file = f"/CS420-Project01/output/output-{current_map_idx + 1:02d}.txt"
                     simulate_single_game(os.path.join(input_folder, map_files[current_map_idx]), output_file, no_solution_due_to_cats, playing)
 
         pygame.display.flip()
