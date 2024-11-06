@@ -1,4 +1,5 @@
 import pygame
+import os
 
 # Initialize Pygame
 pygame.init()
@@ -29,15 +30,19 @@ button_font = pygame.font.Font(None, 50)
 button_map_font = pygame.font.Font(None, 40)
 FONT = pygame.font.Font(None, 36)
 
-# Load images for symbols
+# Get the absolute path to the "items" folder relative to the current file
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+items_folder = os.path.join(project_root, "items")
+
+# Load images dynamically using the constructed path
 IMAGES = {
-    "#": pygame.image.load("/CS420-Project01/items/wall.png"),
-    " ": pygame.image.load("/CS420-Project01/items/floor.png"),
-    "$": pygame.image.load("/CS420-Project01/items/knitting_ball.png"),
-    ".": pygame.image.load("/CS420-Project01/items/basket.png"),
-    "*": pygame.image.load("/CS420-Project01/items/ball_in_basket.png"),
-    "+": pygame.image.load("/CS420-Project01/items/cat_in_basket.png"),
-    "@": pygame.image.load("/CS420-Project01/items/cat.png"),
+    "#": pygame.image.load(os.path.join(items_folder, "wall.png")),
+    " ": pygame.image.load(os.path.join(items_folder, "floor.png")),
+    "$": pygame.image.load(os.path.join(items_folder, "knitting_ball.png")),
+    ".": pygame.image.load(os.path.join(items_folder, "basket.png")),
+    "*": pygame.image.load(os.path.join(items_folder, "ball_in_basket.png")),
+    "+": pygame.image.load(os.path.join(items_folder, "cat_in_basket.png")),
+    "@": pygame.image.load(os.path.join(items_folder, "cat.png")),
 }
 
 # Function to load map from file
