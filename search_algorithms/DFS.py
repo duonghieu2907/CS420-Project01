@@ -1,5 +1,7 @@
-from .search_utility import *
+from typing import final
 
+from .search_utility import *
+OVER_RECURSION = -1
 def DFS_Search(weights, grid) -> object:
     initial_state = find_initial_state(grid)
     visited = set()
@@ -32,7 +34,13 @@ def recursive_dfs(current_state, grid, weights, tracemalloc, visited, start_time
 
     # Explore successors
     for successor in get_successors(current_state, weights, grid):
-        result = recursive_dfs(successor, grid, weights, tracemalloc, visited, start_time, nodes_generated)
+        try:
+            result = recursive_dfs(successor, grid, weights, tracemalloc, visited, start_time, nodes_generated)
+        except RecursionError:
+            time_taken = time.time() - start_time
+            memory_used = tracemalloc.get_traced_memory()[1]
+            return OVER_RECURSION, nodes_generated, time_taken, memory_used
+
         if result:
             return result  # Propagate the solution up if found
 
@@ -76,8 +84,11 @@ def DFS_process_input_files(input_folder: str) -> List[Dict[str, Any]]:
                 result["memory_used"] = memory_used
                 
                 # If no solution was found, mark it in the final_state
-                if not final_state:
+                if final_state == OVER_RECURSION:
+                    result["final_state"] = "The searching got over the limit of recursion"
+                elif not final_state:
                     result["final_state"] = "No solution found"
+
 
             except FileNotFoundError:
                 result["error_message"] = f"File not found: {input_path}"

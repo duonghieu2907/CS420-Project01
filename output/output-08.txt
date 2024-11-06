@@ -1,8 +1,3 @@
-A Star Search
-Steps: 34
-Total Weight Pushed: 212
-Nodes Generated: 7774
-Time Taken: 2.4929 seconds
-Memory Used: 4369.76 KB
-RurrddddlDRuuuuLLLrdRDrddlLdllURlU
+Depth-First Search
+The searching got over the limit of recursion
 
