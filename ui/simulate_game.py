@@ -30,7 +30,7 @@ def render_simulation(grid, stats, speed, display_end_text=False, no_solution=Fa
     screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, 10))
 
     # Render the grid cells with images for walls, floor, stones, baskets, etc.
-    if grid is not None:
+    if grid:
         for i, row in enumerate(grid):
             for j, cell in enumerate(row):
                 x, y = j * SQUARE_SIZE, HEADER_HEIGHT + i * SQUARE_SIZE
@@ -51,7 +51,7 @@ def render_simulation(grid, stats, speed, display_end_text=False, no_solution=Fa
 
     # Display persistent instructions at the bottom
     pause_text = FONT.render("Press SPACE to pause, SPACE again to continue", True, (0, 0, 0))
-    exit_text = FONT.render("Press ESC to exit | Arrow keys to navigate maps", True, (0, 0, 0))
+    exit_text = FONT.render("Press ESC to exit", True, (0, 0, 0))
     screen.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, HEIGHT + HEADER_HEIGHT - 40))
     screen.blit(exit_text, (WIDTH // 2 - exit_text.get_width() // 2, HEIGHT + HEADER_HEIGHT - 10))
 
@@ -88,12 +88,11 @@ def simulate(grid, path, stats):
     paused = False
 
     # Check if the map has a solution
-    if path == "No solution":
+    no_solution = path == "No solution"
+    if no_solution:
         display_end_text = True
-        no_solution = True
-    else:
-        no_solution = False
 
+    # Process actions if there's a solution
     for action in path:
         if no_solution:
             break  # Skip simulation if there's no solution
@@ -148,61 +147,37 @@ def simulate(grid, path, stats):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    return
-                elif event.key == pygame.K_RIGHT:
-                    return  # Move to next map
-                elif event.key == pygame.K_LEFT:
-                    return  # Move to previous map
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                return
 
-def simulate_all_games(output_folder, input_folder):
-    output_files = sorted([f for f in os.listdir(output_folder) if f.startswith("output") and f.endswith(".txt")])
-    input_files = sorted([f for f in os.listdir(input_folder) if f.startswith("input") and f.endswith(".txt")])
+def simulate_single_game(input_file, output_file):
+    grid, no_solution_due_to_cats = load_map(input_file)
+    
+    if no_solution_due_to_cats:
+        # Display the map with a "No solution found" message
+        stats = {
+            "algorithm": "Not applicable",
+            "steps": 0,
+            "total_weight": 0,
+            "nodes_generated": 0,
+            "time_taken": 0,
+            "memory_used": 0,
+            "path": "No solution"
+        }
+        render_simulation(grid, stats, speed=50, display_end_text=True, no_solution=True)
+        wait_for_exit()
+        return
 
-    current_map_idx = 0
-    while current_map_idx < len(input_files):
-        output_file = output_files[current_map_idx]
-        input_file = input_files[current_map_idx]
+    # Parse simulation results normally if only one cat is present
+    stats = parse_output(output_file)
+    simulate(grid, stats["path"], stats)
 
-        # Load map and check if there's no solution due to incorrect cat count
-        grid, no_solution_due_to_cats = load_map(os.path.join(input_folder, input_file))
-        
-        if no_solution_due_to_cats:
-            # Display the map with a "No solution" message
-            stats = {
-                "algorithm": "Not applicable",
-                "steps": 0,
-                "total_weight": 0,
-                "nodes_generated": 0,
-                "time_taken": 0,
-                "memory_used": 0,
-                "path": "No solution"
-            }
-            render_simulation(grid, stats, speed=50, display_end_text=True, no_solution=True)
-        else:
-            # Parse simulation results normally if only one cat is present
-            stats = parse_output(os.path.join(output_folder, output_file))
-            simulate(grid, stats["path"], stats)
-
-        # Allow navigation to the next or previous map
-        navigating = True
-        while navigating:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    return
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RIGHT and current_map_idx < len(input_files) - 1:
-                        current_map_idx += 1
-                        navigating = False  # Move to the next map
-                    elif event.key == pygame.K_LEFT and current_map_idx > 0:
-                        current_map_idx -= 1
-                        navigating = False  # Move to the previous map
-                    elif event.key == pygame.K_ESCAPE:
-                        pygame.quit()
-                        return
-
-# Run all simulations for 10 output and input files
-simulate_all_games("output", "input")
+def wait_for_exit():
+    """Waits for user to press ESC to exit after no-solution message."""
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                pygame.quit()
+                return
+        pygame.display.flip()

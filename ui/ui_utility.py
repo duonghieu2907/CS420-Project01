@@ -41,21 +41,32 @@ IMAGES = {
 }
 
 # Function to load map from file
-def load_map(file_path, skip_first_line=False):
-    with open(file_path, 'r') as f:
-        lines = f.readlines()
-    
-    # Optionally skip the first line
-    grid_lines = lines[1:] if skip_first_line else lines
+def load_map(file_path, skip_first_line=True):
+    try:
+        with open(file_path, 'r') as f:
+            # Parse weights if skipping the first line
+            weights = list(map(int, f.readline().strip().split())) if skip_first_line else []
+            
+            # Parse the grid, keeping leading and trailing whitespace in each row
+            grid = [list(line.rstrip('\n')) for line in f.readlines()]
 
-    # Convert each line to a list of characters to form the grid
-    grid = [list(line.strip()) for line in grid_lines]
-    
-    # Count cats in the grid
-    cat_count = sum(cell in {'@', '+'} for row in grid for cell in row)
-    no_solution_due_to_cats = cat_count != 1  # No solution if there are zero or multiple cats
-    
-    return grid, no_solution_due_to_cats
+        # Validate grid for the number of stones
+        stone_count = sum(row.count('$') + row.count('*') for row in grid)
+        if len(weights) != stone_count:
+            print(f"Error: Number of stones does not match weights in {file_path}.")
+            return None, True  # Indicate a loading error with mismatched weights
+
+        # Check for the number of cats (Ares) in the grid
+        cat_count = sum(row.count('@') + row.count('+') for row in grid)
+        if cat_count != 1:
+            print("No solution: Incorrect number of cats in the grid.")
+            return grid, True  # Indicate that there’s an unsolvable map due to cat count
+        
+        return grid, False  # Return grid and indicate no issues found
+
+    except Exception as e:
+        print(f"Error parsing file {file_path}: {e}")
+        return None, True  # Indicate an error in loading
 
 # Button classes and functions (Button, MapButton, and draw_arrow_button)
 class Button:
