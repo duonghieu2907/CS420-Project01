@@ -63,7 +63,7 @@ def heuristic_function(state, weights, grid):
         return 0
     stones = state.stones  # Positions of stones (x1, x2, ..., xn)
     switches = [(i, j) for i, row in enumerate(grid) for j, cell in enumerate(row) if
-                cell == '.' or cell == '+' or cell == '-']  # Positions of switches (y1, y2, ..., yn)
+                cell == '.' or cell == '*' or cell == '+']  # Positions of switches (y1, y2, ..., yn)
     ares_pos = state.ares_pos  # Position of Ares
 
     if len(stones) != len(switches):
