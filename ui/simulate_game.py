@@ -166,10 +166,11 @@ def simulate_all_games(output_folder, input_folder):
         output_file = output_files[current_map_idx]
         input_file = input_files[current_map_idx]
 
+        # Load map and check if there's no solution due to incorrect cat count
         grid, no_solution_due_to_cats = load_map(os.path.join(input_folder, input_file))
         
-        # If no solution due to cat count, create a dummy stats dictionary
         if no_solution_due_to_cats:
+            # Display the map with a "No solution" message
             stats = {
                 "algorithm": "Not applicable",
                 "steps": 0,
@@ -179,14 +180,13 @@ def simulate_all_games(output_folder, input_folder):
                 "memory_used": 0,
                 "path": "No solution"
             }
-            # Render the "No solution" map
             render_simulation(grid, stats, speed=50, display_end_text=True, no_solution=True)
         else:
             # Parse simulation results normally if only one cat is present
             stats = parse_output(os.path.join(output_folder, output_file))
             simulate(grid, stats["path"], stats)
 
-        # Navigation to the next map or previous map
+        # Allow navigation to the next or previous map
         navigating = True
         while navigating:
             for event in pygame.event.get():

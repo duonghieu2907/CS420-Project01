@@ -41,20 +41,21 @@ IMAGES = {
 }
 
 # Function to load map from file
-def load_map(file_path):
+def load_map(file_path, skip_first_line=False):
     with open(file_path, 'r') as f:
         lines = f.readlines()
+    
+    # Optionally skip the first line
+    grid_lines = lines[1:] if skip_first_line else lines
 
-    # Skip weights on the first line if present and load the grid
-    grid = [list(line.strip()) for line in lines[1:]]
+    # Convert each line to a list of characters to form the grid
+    grid = [list(line.strip()) for line in grid_lines]
     
-    # Count the occurrences of '@' and '+' (indicating Ares/cat positions)
-    cat_count = sum(cell in ('@', '+') for row in grid for cell in row)
-    if cat_count != 1:
-        print("No solution: Invalid number of cats in the grid")
-        return grid, True  # Return grid with no solution due to cat count
+    # Count cats in the grid
+    cat_count = sum(cell in {'@', '+'} for row in grid for cell in row)
+    no_solution_due_to_cats = cat_count != 1  # No solution if there are zero or multiple cats
     
-    return grid, False  # Return the grid with no solution flag set to False
+    return grid, no_solution_due_to_cats
 
 # Button classes and functions (Button, MapButton, and draw_arrow_button)
 class Button:
