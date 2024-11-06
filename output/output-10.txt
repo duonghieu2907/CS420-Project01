@@ -1,3 +1,8 @@
-Depth-First Search
-The searching got over the limit of recursion
+Breadth-First Search
+Steps: 64
+Total Weight Pushed: 300
+Nodes Generated: 2582
+Time Taken: 0.0604 seconds
+Memory Used: 414.21 KB
+DDDlllddrrUdlluurRdddrruuLUUUUUUluRdddddddrddlluUdlluurRdrUUUUUU
 

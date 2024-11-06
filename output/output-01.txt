@@ -1,8 +1,8 @@
-Depth-First Search
-Steps: 87
-Total Weight Pushed: 404
-Nodes Generated: 87
-Time Taken: 0.0100 seconds
-Memory Used: 256.09 KB
-uulDulddRuurdrurDulddLuurddRuulddluuldldRuurdrurddRuulddluuldlulddrRuurdrurddRuulddlLLL
+Breadth-First Search
+Steps: 14
+Total Weight Pushed: 398
+Nodes Generated: 3603
+Time Taken: 0.0787 seconds
+Memory Used: 1025.68 KB
+uLulDrrrRRRurD
 
