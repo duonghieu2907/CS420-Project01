@@ -1,3 +1,8 @@
-Depth-First Search
-No solution found
+A Star Search
+Steps: 15
+Total Weight Pushed: 45
+Nodes Generated: 46
+Time Taken: 0.0031 seconds
+Memory Used: 9.84 KB
+drrdLullddrUUUU
 

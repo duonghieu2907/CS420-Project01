@@ -1,3 +1,8 @@
-Depth-First Search
-The searching got over the limit of recursion
+A Star Search
+Steps: 64
+Total Weight Pushed: 300
+Nodes Generated: 1420
+Time Taken: 0.3080 seconds
+Memory Used: 500.67 KB
+DDDlllddrrUdlluurRdddrruuLUUUUUUluRdddddddrddlluUdlluurRdrUUUUUU
 

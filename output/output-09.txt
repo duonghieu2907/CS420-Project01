@@ -1,3 +1,8 @@
-Depth-First Search
-Error: Number of stones does not match weights in input\input-09.txt.
+A Star Search
+Steps: 43
+Total Weight Pushed: 600
+Nodes Generated: 4040
+Time Taken: 1.0765 seconds
+Memory Used: 1224.89 KB
+lluRuRlddrUrUrrdLLLdlluRuRRdLulDrrrruLLLddL
 
