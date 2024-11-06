@@ -1,2 +1,3 @@
-Error
+Depth-First Search
 Error: Number of stones does not match weights in input\input-06.txt.
+
