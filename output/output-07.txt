@@ -2,7 +2,7 @@ A Star Search
 Steps: 11
 Total Weight Pushed: 36
 Nodes Generated: 53
-Time Taken: 0.0087 seconds
+Time Taken: 0.0119 seconds
 Memory Used: 11.44 KB
 lldllluRRRR
 
