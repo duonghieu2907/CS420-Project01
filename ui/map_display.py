@@ -30,7 +30,7 @@ def map_display():
 
     # Start with the first map
     current_map_idx = 0
-    grid = load_map(os.path.join(input_folder, map_files[current_map_idx]))
+    grid, _ = load_map(os.path.join(input_folder, map_files[current_map_idx]), skip_first_line=True)
 
     while True:
         # Determine page indicator text
@@ -47,10 +47,10 @@ def map_display():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT and current_map_idx < len(map_files) - 1:
                     current_map_idx += 1
-                    grid = load_map(os.path.join(input_folder, map_files[current_map_idx]))
+                    grid, _ = load_map(os.path.join(input_folder, map_files[current_map_idx]), skip_first_line=True)
                 elif event.key == pygame.K_LEFT and current_map_idx > 0:
                     current_map_idx -= 1
-                    grid = load_map(os.path.join(input_folder, map_files[current_map_idx]))
+                    grid, _ = load_map(os.path.join(input_folder, map_files[current_map_idx]), skip_first_line=True)
 
         pygame.display.flip()
 
