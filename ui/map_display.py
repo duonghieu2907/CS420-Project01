@@ -1,7 +1,7 @@
 import pygame
 import os
 from ui_utility import screen, IMAGES, FONT, SQUARE_SIZE, BACKGROUND_COLOR, WIDTH, HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT, load_map
-from simulate_game import simulate_single_game, parse_output, simulate
+from simulate_game import  parse_output, simulate
 
 # Function to render map
 def render_map(grid, page_text, additional_text=""):
@@ -28,9 +28,9 @@ def render_map(grid, page_text, additional_text=""):
 
 # Main function for displaying maps with navigation
 def map_display():
-    input_folder = "input"
+    input_folder = "../input"
     map_files = sorted([f for f in os.listdir(input_folder) if f.endswith(".txt")])
-
+    playing = True
     if not map_files:
         print("No map files found in the input folder.")
         pygame.quit()
@@ -39,7 +39,7 @@ def map_display():
     current_map_idx = 0
     grid, no_solution_due_to_cats = load_map(os.path.join(input_folder, map_files[current_map_idx]), skip_first_line=True)
 
-    while True:
+    while playing:
         # Determine page text
         page_text = f"Map {current_map_idx + 1} {'(end)' if current_map_idx == len(map_files) - 1 else ''}"
         additional_text = "Press Enter to choose this map"
@@ -50,7 +50,8 @@ def map_display():
         # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+                #pygame.quit()
+                playing = False
                 return
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT and current_map_idx < len(map_files) - 1:
@@ -60,11 +61,11 @@ def map_display():
                     current_map_idx -= 1
                     grid, no_solution_due_to_cats = load_map(os.path.join(input_folder, map_files[current_map_idx]), skip_first_line=True)
                 elif event.key == pygame.K_RETURN:  # Start simulation for chosen map
-                    output_file = f"output/output-{current_map_idx + 1:02d}.txt"
-                    simulate_single_game(os.path.join(input_folder, map_files[current_map_idx]), output_file, no_solution_due_to_cats)
+                    output_file = f"../output/output-{current_map_idx + 1:02d}.txt"
+                    simulate_single_game(os.path.join(input_folder, map_files[current_map_idx]), output_file, no_solution_due_to_cats, playing)
 
         pygame.display.flip()
-
+    pygame.quit()
 # Function to render the simulation, displaying "No solution found" if needed
 def render_simulation(grid, stats, speed, display_end_text=False, no_solution=False):
     screen.fill(BACKGROUND_COLOR)
@@ -99,7 +100,7 @@ def render_simulation(grid, stats, speed, display_end_text=False, no_solution=Fa
     screen.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, HEIGHT + HEADER_HEIGHT - 40))
     screen.blit(exit_text, (WIDTH // 2 - exit_text.get_width() // 2, HEIGHT + HEADER_HEIGHT - 10))
 
-def simulate_single_game(input_file, output_file, no_solution):
+def simulate_single_game(input_file, output_file, no_solution, playing):
     # Load map and check if there's no solution due to incorrect cat count
     grid, _ = load_map(input_file)
     
@@ -116,18 +117,20 @@ def simulate_single_game(input_file, output_file, no_solution):
         }
         render_simulation(grid, stats, speed=50, display_end_text=True, no_solution=True)
         pygame.display.flip()
-        wait_for_exit()
+        wait_for_exit(playing)
         return
 
     # Parse simulation results normally if there’s only one cat
     stats = parse_output(output_file)
-    simulate(grid, stats["path"], stats)
+    simulate(grid, stats["path"], stats, playing)
 
-def wait_for_exit():
+def wait_for_exit(playing):
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                pygame.quit()
+                playing = False
+                print(f"Press esc ")
+                #pygame.quit()
                 return
         pygame.display.flip()
         

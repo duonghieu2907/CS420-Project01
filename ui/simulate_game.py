@@ -82,7 +82,7 @@ def update_grid(grid, action):
                     grid[stone_x][stone_y] = '*' if grid[stone_x][stone_y] == '.' else '$'
             break
 
-def simulate(grid, path, stats):
+def simulate(grid, path, stats, playing):
     speed = 50
     display_end_text = False
     paused = False
@@ -103,13 +103,15 @@ def simulate(grid, path, stats):
             pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                    #pygame.quit()
+                    playing = False
                     return
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         paused = False
                     elif event.key == pygame.K_ESCAPE:
-                        pygame.quit()
+                        #pygame.quit()
+                        playing = False
                         return
                     elif event.key == pygame.K_LEFT:
                         speed = max(10, speed - 10)
@@ -119,13 +121,15 @@ def simulate(grid, path, stats):
         # Handle main simulation events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+                #pygame.quit()
+                playing = False
                 return
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     paused = True
                 elif event.key == pygame.K_ESCAPE:
-                    pygame.quit()
+                    #pygame.quit()
+                    playing = False
                     return
                 elif event.key == pygame.K_LEFT:
                     speed = max(10, speed - 10)
@@ -138,6 +142,8 @@ def simulate(grid, path, stats):
         pygame.display.flip()
         time.sleep(0.01 * (100 - speed))
 
+
+
     # Display the end text after completing the path
     display_end_text = True
     while True:
@@ -145,10 +151,12 @@ def simulate(grid, path, stats):
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+                #pygame.quit()
+                playing = False
                 return
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                pygame.quit()
+                #pygame.quit()
+                playing = False
                 return
 
 def simulate_single_game(input_file, output_file):

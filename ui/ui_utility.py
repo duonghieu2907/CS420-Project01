@@ -31,13 +31,13 @@ FONT = pygame.font.Font(None, 36)
 
 # Load images for symbols
 IMAGES = {
-    "#": pygame.image.load("items/wall.png"),
-    " ": pygame.image.load("items/floor.png"),
-    "$": pygame.image.load("items/knitting_ball.png"),
-    ".": pygame.image.load("items/basket.png"),
-    "*": pygame.image.load("items/ball_in_basket.png"),
-    "+": pygame.image.load("items/cat_in_basket.png"),
-    "@": pygame.image.load("items/cat.png"),
+    "#": pygame.image.load("../items/wall.png"),
+    " ": pygame.image.load("../items/floor.png"),
+    "$": pygame.image.load("../items/knitting_ball.png"),
+    ".": pygame.image.load("../items/basket.png"),
+    "*": pygame.image.load("../items/ball_in_basket.png"),
+    "+": pygame.image.load("../items/cat_in_basket.png"),
+    "@": pygame.image.load("../items/cat.png"),
 }
 
 # Function to load map from file
