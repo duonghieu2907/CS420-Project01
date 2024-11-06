@@ -1,31 +1,7 @@
 import pygame
-import os
 import time
-import tracemalloc
+from ui_utility import screen, IMAGES, FONT, SQUARE_SIZE, BACKGROUND_COLOR, WIDTH, HEIGHT, HEADER_HEIGHT, load_map
 
-pygame.init()
-
-# Settings
-WIDTH, HEIGHT = 1000, 600
-HEADER_HEIGHT = 50  # Reserved at the top for the header
-screen = pygame.display.set_mode((WIDTH, HEIGHT + HEADER_HEIGHT))
-pygame.display.set_caption("Simulation")
-
-# Load images for symbols
-IMAGES = {
-    "#": pygame.image.load("items/wall.png"),
-    " ": pygame.image.load("items/floor.png"),
-    "$": pygame.image.load("items/knitting_ball.png"),
-    ".": pygame.image.load("items/basket.png"),
-    "*": pygame.image.load("items/ball_in_basket.png"),
-    "+": pygame.image.load("items/cat_in_basket.png"),
-    "@": pygame.image.load("items/cat.png"),
-}
-
-SQUARE_SIZE = 60
-FONT = pygame.font.Font(None, 36)
-
-# Directions with deltas and corresponding actions
 directions = [(-1, 0, 'u', 'U'), (1, 0, 'd', 'D'), (0, -1, 'l', 'L'), (0, 1, 'r', 'R')]
 
 # Parsing function for simulation
@@ -43,30 +19,23 @@ def parse_output(file_path):
     }
     return stats
 
-# Function to load map from file
-def load_map(file_path):
-    with open(file_path, 'r') as f:
-        lines = f.readlines()
-    grid = [list(line.strip()) for line in lines[1:]]  # Skipping weights on first line if present
-    return grid
-
 # Function to render simulation
 def render_simulation(grid, stats, speed, display_end_text=False):
-    screen.fill((253, 240, 213))
+    screen.fill(BACKGROUND_COLOR)
     
     # Draw the algorithm name in the header area
     algorithm_text = FONT.render(f"Algorithm: {stats['algorithm']}", True, (0, 0, 0))
-    screen.blit(algorithm_text, (WIDTH // 2 - algorithm_text.get_width() // 2, 10))  # Centered in the header area
+    screen.blit(algorithm_text, (WIDTH // 2 - algorithm_text.get_width() // 2, 10))
 
     # Render the grid below the header
     for i, row in enumerate(grid):
         for j, cell in enumerate(row):
-            x, y = j * SQUARE_SIZE, HEADER_HEIGHT + i * SQUARE_SIZE  # Offset y by HEADER_HEIGHT
+            x, y = j * SQUARE_SIZE, HEADER_HEIGHT + i * SQUARE_SIZE
             screen.blit(IMAGES.get(cell, IMAGES[" "]), (x, y))
 
     # Draw the speed bar below the grid
-    pygame.draw.rect(screen, (200, 200, 200), (20, HEIGHT - 70 + HEADER_HEIGHT, 200, 20))  # Background of the speed bar
-    pygame.draw.rect(screen, (0, 128, 255), (20, HEIGHT - 70 + HEADER_HEIGHT, int(speed * 2), 20))  # Adjusted by speed
+    pygame.draw.rect(screen, (200, 200, 200), (20, HEIGHT - 70 + HEADER_HEIGHT, 200, 20))
+    pygame.draw.rect(screen, (0, 128, 255), (20, HEIGHT - 70 + HEADER_HEIGHT, int(speed * 2), 20))
     speed_text = FONT.render("Speed:", True, (0, 0, 0))
     screen.blit(speed_text, (20, HEIGHT - 100 + HEADER_HEIGHT))
 
@@ -83,29 +52,21 @@ def render_simulation(grid, stats, speed, display_end_text=False):
 def find_ares_position(grid):
     for i, row in enumerate(grid):
         for j, cell in enumerate(row):
-            if cell == '@' or cell == '+':  # Ares or Ares on a switch
+            if cell == '@' or cell == '+':
                 return i, j
-    return None  # Ares not found
+    return None
 
 # Function to update the grid based on action
 def update_grid(grid, action):
-    # Find Ares's current position
     ares_x, ares_y = find_ares_position(grid)
-
-    # Find the matching direction for the action
     for dx, dy, move, push in directions:
         if action == move or action == push:
-            new_x, new_y = ares_x + dx, ares_y + dy  # New position for Ares
-
-            # Check if action is a move (lowercase)
-            if action.islower():
-                if grid[new_x][new_y] in [' ', '.']:
-                    grid[new_x][new_y] = '@' if grid[new_x][new_y] == ' ' else '+'
-                    grid[ares_x][ares_y] = ' ' if grid[ares_x][ares_y] == '@' else '.'
-                    
-            # Check if action is a push (uppercase)
+            new_x, new_y = ares_x + dx, ares_y + dy
+            if action.islower() and grid[new_x][new_y] in [' ', '.']:
+                grid[new_x][new_y] = '@' if grid[new_x][new_y] == ' ' else '+'
+                grid[ares_x][ares_y] = ' ' if grid[ares_x][ares_y] == '@' else '.'
             elif action.isupper():
-                stone_x, stone_y = new_x + dx, new_y + dy  # Position of stone after push
+                stone_x, stone_y = new_x + dx, new_y + dy
                 if grid[new_x][new_y] in ['$', '*'] and grid[stone_x][stone_y] in [' ', '.']:
                     grid[new_x][new_y] = '@' if grid[new_x][new_y] == '$' else '+'
                     grid[ares_x][ares_y] = ' ' if grid[ares_x][ares_y] == '@' else '.'
@@ -114,7 +75,7 @@ def update_grid(grid, action):
 
 # Function to simulate movement
 def simulate(grid, path, stats):
-    speed = 50  # Initial speed percentage
+    speed = 50
     display_end_text = False
     for action in path:
         for event in pygame.event.get():
@@ -130,17 +91,15 @@ def simulate(grid, path, stats):
                 elif event.key == pygame.K_RIGHT:
                     speed = min(100, speed + 10)
 
-        # Update grid based on action (move or push)
         update_grid(grid, action)
         render_simulation(grid, stats, speed)
         pygame.display.flip()
-        time.sleep(0.01 * (100 - speed))  # Adjust speed based on speed bar
+        time.sleep(0.01 * (100 - speed))
 
     display_end_text = True
     while True:
         render_simulation(grid, stats, speed, display_end_text)
         pygame.display.flip()
-        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -155,5 +114,5 @@ def simulate_game(output_file, map_file):
     stats = parse_output(output_file)
     simulate(grid, stats["path"], stats)
 
-# Example usage
+# Test
 simulate_game("output/output-01.txt", "input/input-01.txt")
