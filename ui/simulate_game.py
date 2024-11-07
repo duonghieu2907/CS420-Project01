@@ -35,7 +35,7 @@ def load_weights(file_path):
         weights = list(map(int, first_line.split(',')))  # Assuming weights are comma-separated
     return weights
 
-def update_grid(grid, action, weights, total_weight):
+def update_grid(grid, action, weights, total_weight, stone_index_list):
     ares_x, ares_y = find_ares_position(grid)
     for dx, dy, move, push in directions:
         if action == move or action == push:
@@ -50,8 +50,12 @@ def update_grid(grid, action, weights, total_weight):
             # Handle push actions (uppercase) and update stone positions
             elif action.isupper():
                 stone_x, stone_y = new_x + dx, new_y + dy
+                stone_index_list[stone_x][stone_y] = stone_index_list[new_x][new_y]
+                stone_index_list[new_x][new_y] = None  # no stone at previous place
+
                 if grid[new_x][new_y] in ['$', '*'] and grid[stone_x][stone_y] in [' ', '.']:
-                    stone_index = find_stone_index(grid, new_x, new_y)  # Use the position of the stone being pushed
+                   # stone_index = find_stone_index(grid, new_x, new_y)  # Use the position of the stone being pushed
+                    stone_index = stone_index_list[stone_x][stone_y]
                     if stone_index is not None and stone_index < len(weights):  # Check bounds
                         move_cost += weights[stone_index]  # Add the stone's weight to move cost
                     grid[new_x][new_y] = '@' if grid[new_x][new_y] == '$' else '+'
@@ -99,7 +103,7 @@ def render_simulation_controls(stats, speed, step_count, total_weight, paused):
 
     return pause_button, restart_button
 
-def simulate(grid, path, stats, playing, original_grid, weights):
+def simulate(grid, path, stats, playing, original_grid, weights, stone_index_list):
     speed = 50
     step_count = 0
     total_weight = 0  # Initialize total weight count for each move
@@ -117,7 +121,7 @@ def simulate(grid, path, stats, playing, original_grid, weights):
         if not paused:
             # Perform the next action in the path
             action = path[action_index]
-            total_weight = update_grid(grid, action, weights, total_weight)
+            total_weight = update_grid(grid, action, weights, total_weight, stone_index_list)
             step_count += 1
             action_index += 1
 
@@ -162,6 +166,17 @@ def simulate(grid, path, stats, playing, original_grid, weights):
 
 def simulate_single_game(input_file, output_file, weights, no_solution_due_to_cats=False):
     grid, _ = load_map(input_file)
+
+    #Load the index_stone at each cell
+    stone_index_list = [[None for _ in row] for row in grid]
+    stone_index = 0
+
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            if grid[i][j] == '$' or grid[i][j] == "*":
+                stone_index_list[i][j] = stone_index
+                stone_index += 1
+
     original_grid = [row[:] for row in grid]  # Make a deep copy of the original grid for restarting
     
     if no_solution_due_to_cats:
@@ -179,7 +194,7 @@ def simulate_single_game(input_file, output_file, weights, no_solution_due_to_ca
         return
 
     stats = parse_output(output_file)
-    simulate(grid, stats["path"], stats, playing=True, original_grid=original_grid, weights=weights)
+    simulate(grid, stats["path"], stats, playing=True, original_grid=original_grid, weights=weights, stone_index_list= stone_index_list)
 
 def wait_for_exit():
     while True:

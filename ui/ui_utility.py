@@ -94,7 +94,7 @@ def render_simulation(grid, stats, speed, display_end_text=False, no_solution=Fa
     if display_end_text and not no_solution:
         time_text = FONT.render(f"Time: {stats['time_taken']} seconds", True, (0, 0, 0))
         memory_text = FONT.render(f"Memory: {stats['memory_used']} KB", True, (0, 0, 0))
-        weight_text = FONT.render(f"Weight: {stats['total_weight']} $", True, (0, 0, 0))
+        weight_text = FONT.render(f"Weight: {stats['total_weight'] + stats['steps']} $", True, (0, 0, 0))
         step_text = FONT.render(f"Step: {stats['steps']} ", True, (0, 0, 0))
         screen.blit(time_text, (WIDTH - 300, HEIGHT - 100 + HEADER_HEIGHT))
         screen.blit(memory_text, (WIDTH - 300, HEIGHT - 70 + HEADER_HEIGHT))
