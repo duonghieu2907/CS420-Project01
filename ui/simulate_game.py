@@ -142,6 +142,15 @@ def simulate(grid, path, stats, playing, original_grid, weights, stone_index_lis
                 elif restart_button.is_clicked(event.pos):
                     # Reset grid to original state and restart simulation
                     grid = [row[:] for row in original_grid]  # Deep copy the original grid
+                    # Load the index_stone at each cell
+                    stone_index_list = [[None for _ in row] for row in grid]
+                    stone_index = 0
+
+                    for i in range(len(grid)):
+                        for j in range(len(grid[i])):
+                            if grid[i][j] == '$' or grid[i][j] == "*":
+                                stone_index_list[i][j] = stone_index
+                                stone_index += 1
                     step_count = 0
                     total_weight = 0
                     action_index = 0  # Reset action index
