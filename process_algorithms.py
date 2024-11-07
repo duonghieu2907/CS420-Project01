@@ -1,4 +1,3 @@
-# process_algorithms.py
 import os
 from search_algorithms.UCS import UCS_process_input_files
 from search_algorithms.BFS import BFS_process_input_files
