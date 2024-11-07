@@ -90,12 +90,6 @@ def render_simulation(grid, stats, speed, display_end_text=False, no_solution=Fa
                 x, y = j * SQUARE_SIZE, HEADER_HEIGHT + i * SQUARE_SIZE
                 screen.blit(IMAGES.get(cell, IMAGES[" "]), (x, y))
 
-    # Draw speed bar
-    pygame.draw.rect(screen, (200, 200, 200), (20, HEIGHT - 70 + HEADER_HEIGHT, 200, 20))
-    pygame.draw.rect(screen, (0, 128, 255), (20, HEIGHT - 70 + HEADER_HEIGHT, int(speed * 2), 20))
-    speed_text = FONT.render("Speed:", True, (0, 0, 0))
-    screen.blit(speed_text, (20, HEIGHT - 100 + HEADER_HEIGHT))
-
     # Display stats if applicable
     if display_end_text and not no_solution:
         time_text = FONT.render(f"Time: {stats['time_taken']} seconds", True, (0, 0, 0))
@@ -108,10 +102,8 @@ def render_simulation(grid, stats, speed, display_end_text=False, no_solution=Fa
         screen.blit(step_text, (WIDTH - 300, HEIGHT - 160 + HEADER_HEIGHT))
 
 
-    # Display navigation and pause instructions
-    pause_text = FONT.render("Press SPACE to pause, SPACE again to continue", True, (0, 0, 0))
+    # Display navigation
     exit_text = FONT.render("Press ESC to exit", True, (0, 0, 0))
-    screen.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, HEIGHT + HEADER_HEIGHT - 40))
     screen.blit(exit_text, (WIDTH // 2 - exit_text.get_width() // 2, HEIGHT + HEADER_HEIGHT - 10))
 
 # Button classes and functions (Button, MapButton, and draw_arrow_button)

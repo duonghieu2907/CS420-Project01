@@ -14,22 +14,41 @@ output_folder = os.path.join(project_root, "output")
 map_files = sorted([f for f in os.listdir(input_folder) if f.endswith(".txt")])
 current_map_idx = 0
 
+# Function to load the map and weights from the input file
+def load_map_with_weights(file_path):
+    with open(file_path, 'r') as f:
+        # Read weights from the first line
+        weights = list(map(int, f.readline().strip().split()))
+        
+        # Read the grid layout
+        grid = [list(line.rstrip('\n')) for line in f.readlines()]
+    return grid, weights
+
 # Function to render map with optional page and additional instructions text
-def render_map(grid, page_text, additional_text=""):
+def render_map(grid, weights, page_text, additional_text=""):
     screen.fill(BACKGROUND_COLOR)
     
     # Render page indicator
     page_text_rendered = FONT.render(page_text, True, (0, 0, 0))
     screen.blit(page_text_rendered, (WIDTH // 2 - page_text_rendered.get_width() // 2, 10))
 
+    # Counter for weights (to display each weight above the respective stone)
+    weight_index = 0
+
     # Render grid
     for i, row in enumerate(grid):
         for j, cell in enumerate(row):
             x, y = j * SQUARE_SIZE, HEADER_HEIGHT + i * SQUARE_SIZE
             screen.blit(IMAGES.get(cell, IMAGES[" "]), (x, y))
+            
+            # If the cell is a stone, display the corresponding weight above it
+            if cell == '$' and weight_index < len(weights):
+                weight_text = FONT.render(str(weights[weight_index]), True, (255, 255, 255))  # White color for weight text
+                screen.blit(weight_text, (x + SQUARE_SIZE // 4, y - 5))  # Position the weight above the stone
+                weight_index += 1
 
     # Render navigation instructions
-    instructions = FONT.render("Use LEFT and RIGHT arrow keys to navigate maps.", True, (0, 0, 0))
+    instructions = FONT.render("Use LEFT and RIGHT arrows to navigate maps.", True, (0, 0, 0))
     screen.blit(instructions, (WIDTH // 2 - instructions.get_width() // 2, HEIGHT + HEADER_HEIGHT + 10))
 
     # Render additional text, if provided
@@ -46,14 +65,14 @@ def map_selection_screen():
     while running:
         screen.fill(BACKGROUND_COLOR)
         
-        # Load and display the current map
+        # Load and display the current map along with stone weights
         map_file = os.path.join(input_folder, map_files[current_map_idx])
-        grid, no_solution_due_to_cats = load_map(map_file, skip_first_line=True)
+        grid, weights = load_map_with_weights(map_file)  # Load map and weights
         map_number = current_map_idx + 1
         page_text = f"Map {map_number} of {len(map_files)}"
         
-        # Render map centered on the screen
-        render_map(grid, page_text, additional_text="Click to select this map")
+        # Render map centered on the screen with weights displayed above stones
+        render_map(grid, weights, page_text, additional_text="Click to select this map")
         
         # Draw navigation arrows for previous and next maps
         mouse_pos = pygame.mouse.get_pos()
@@ -85,7 +104,7 @@ def map_selection_screen():
                         print(f"Map {map_number} selected with {chosen_algorithm} algorithm!")
                         
                         # Run the simulation for the selected map and algorithm
-                        simulate_single_game(map_file, output_file, no_solution_due_to_cats)
+                        simulate_single_game(map_file, output_file, weights)
 
         # Update the display
         pygame.display.flip()
