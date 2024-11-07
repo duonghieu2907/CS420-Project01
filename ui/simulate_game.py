@@ -1,8 +1,10 @@
 import pygame
 import time
+import os
 from .ui_utility import *
 from .pause_menu import choose_algorithm_menu
 
+# Define movement directions for the simulation
 directions = [(-1, 0, 'u', 'U'), (1, 0, 'd', 'D'), (0, -1, 'l', 'L'), (0, 1, 'r', 'R')]
 
 def parse_output(file_path):
@@ -26,109 +28,143 @@ def find_ares_position(grid):
                 return i, j
     return None
 
-def update_grid(grid, action):
+def load_weights(file_path):
+    """Load the weights of stones from the first line of the input file."""
+    with open(file_path, 'r') as f:
+        first_line = f.readline().strip()
+        weights = list(map(int, first_line.split(',')))  # Assuming weights are comma-separated
+    return weights
+
+def update_grid(grid, action, weights, total_weight):
     ares_x, ares_y = find_ares_position(grid)
     for dx, dy, move, push in directions:
         if action == move or action == push:
             new_x, new_y = ares_x + dx, ares_y + dy
+            move_cost = 1  # Default move cost for Ares
 
             # Handle movement actions (lowercase)
             if action.islower() and grid[new_x][new_y] in [' ', '.']:
                 grid[new_x][new_y] = '@' if grid[new_x][new_y] == ' ' else '+'
                 grid[ares_x][ares_y] = ' ' if grid[ares_x][ares_y] == '@' else '.'
-
+            
             # Handle push actions (uppercase) and update stone positions
             elif action.isupper():
                 stone_x, stone_y = new_x + dx, new_y + dy
                 if grid[new_x][new_y] in ['$', '*'] and grid[stone_x][stone_y] in [' ', '.']:
+                    stone_index = find_stone_index(grid, new_x, new_y)  # Use the position of the stone being pushed
+                    if stone_index is not None and stone_index < len(weights):  # Check bounds
+                        move_cost += weights[stone_index]  # Add the stone's weight to move cost
                     grid[new_x][new_y] = '@' if grid[new_x][new_y] == '$' else '+'
                     grid[ares_x][ares_y] = ' ' if grid[ares_x][ares_y] == '@' else '.'
                     grid[stone_x][stone_y] = '*' if grid[stone_x][stone_y] == '.' else '$'
+            
+            # Update total weight with the calculated move cost
+            total_weight += move_cost
             break
+    return total_weight
 
-def simulate(grid, path, stats, playing):
+def find_stone_index(grid, stone_x, stone_y):
+    # Find the stone index based on its position
+    for i, row in enumerate(grid):
+        for j, cell in enumerate(row):
+            if cell == '$' or cell == '*':
+                if (i, j) == (stone_x, stone_y):
+                    return len([s for r in grid for s in r if s == '$'])  # Calculate the index based on position
+    return None
+
+def render_simulation_controls(stats, speed, step_count, total_weight, paused):
+    # Define the control area
+    controls_rect = pygame.Rect(20, HEIGHT + HEADER_HEIGHT - 150, 960, 140)
+    pygame.draw.rect(screen, (200, 200, 200), controls_rect, border_radius=10)
+
+    # Display step and weight information
+    step_text = FONT.render(f"Steps: {step_count}", True, (0, 0, 0))
+    weight_text = FONT.render(f"Weight: {total_weight}", True, (0, 0, 0))
+    screen.blit(step_text, (controls_rect.x + 20, controls_rect.y + 20))
+    screen.blit(weight_text, (controls_rect.x + 20, controls_rect.y + 60))
+
+    # Display speed bar
+    pygame.draw.rect(screen, (200, 200, 200), (controls_rect.x + 220, controls_rect.y + 20, 200, 20))
+    pygame.draw.rect(screen, (0, 128, 255), (controls_rect.x + 220, controls_rect.y + 20, int(speed * 2), 20))
+    speed_text = FONT.render("Speed:", True, (0, 0, 0))
+    screen.blit(speed_text, (controls_rect.x + 220, controls_rect.y))
+
+    # Pause/Resume button and Restart button
+    pause_text = "Resume" if paused else "Pause"
+    pause_button = Button(pause_text, (controls_rect.x + 550, controls_rect.y + 60))
+    restart_button = Button("Restart", (controls_rect.x + 750, controls_rect.y + 60))
+
+    pause_button.draw(screen, pygame.mouse.get_pos())
+    restart_button.draw(screen, pygame.mouse.get_pos())
+
+    return pause_button, restart_button
+
+def simulate(grid, path, stats, playing, original_grid, weights):
     speed = 50
-    display_end_text = False
+    step_count = 0
+    total_weight = 0  # Initialize total weight count for each move
     paused = False
 
-    # Check if the map has a solution
     no_solution = path == "No solution"
     if no_solution:
-        display_end_text = True
+        render_simulation(grid, stats, speed, display_end_text=True, no_solution=True)
+        return
 
-    # Process actions if there's a solution
-    for action in path:
-        if no_solution:
-            break  # Skip simulation if there's no solution
+    action_index = 0  # Track the current action index in the path
 
-        # Handle pause state
-        while paused:
+    # Main simulation loop
+    while action_index < len(path) and playing:
+        if not paused:
+            # Perform the next action in the path
+            action = path[action_index]
+            total_weight = update_grid(grid, action, weights, total_weight)
+            step_count += 1
+            action_index += 1
+
+            # Render updated grid and controls
             render_simulation(grid, stats, speed)
+            pause_button, restart_button = render_simulation_controls(stats, speed, step_count, total_weight, paused)
             pygame.display.flip()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    #playing = False
-                    return
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        paused = False
-                    elif event.key == pygame.K_ESCAPE:
-                        #pygame.quit()
-                        playing = False
-                        return
-                    elif event.key == pygame.K_LEFT:
-                        speed = max(10, speed - 10)
-                    elif event.key == pygame.K_RIGHT:
-                        speed = min(100, speed + 10)
+            time.sleep(0.01 * (100 - speed))
 
-        # Handle main simulation events
+        # Event handling for pause, restart, and speed adjustment
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                #playing = False
+                playing = False
                 return
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if pause_button.is_clicked(event.pos):
+                    paused = not paused  # Toggle paused state
+                elif restart_button.is_clicked(event.pos):
+                    # Reset grid to original state and restart simulation
+                    grid = [row[:] for row in original_grid]  # Deep copy the original grid
+                    step_count = 0
+                    total_weight = 0
+                    action_index = 0  # Reset action index
+                    paused = False  # Ensure simulation restarts in the play state
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    paused = True
-                elif event.key == pygame.K_ESCAPE:
-                    #pygame.quit()
-                    playing = False
-                    return
-                elif event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT:
                     speed = max(10, speed - 10)
                 elif event.key == pygame.K_RIGHT:
                     speed = min(100, speed + 10)
 
-        # Update grid based on the current action
-        update_grid(grid, action)
-        render_simulation(grid, stats, speed)
-        pygame.display.flip()
-        time.sleep(0.01 * (100 - speed))
-
-
-
-    # Display the end text after completing the path
-    display_end_text = True
-    while True:
-        render_simulation(grid, stats, speed, display_end_text, no_solution)
+    # End of simulation: remove pause instructions and display final state
+    while playing:
+        render_simulation(grid, stats, speed, display_end_text=True)
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                #playing = False
+                playing = False
                 return
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                #pygame.quit()
                 playing = False
                 return
 
-def simulate_single_game(input_file, output_file, no_solution_due_to_cats=False):
-    # Load map and check if there's no solution due to incorrect cat count
+def simulate_single_game(input_file, output_file, weights, no_solution_due_to_cats=False):
     grid, _ = load_map(input_file)
+    original_grid = [row[:] for row in grid]  # Make a deep copy of the original grid for restarting
     
     if no_solution_due_to_cats:
-        # Display the map with a "No solution found" message
         stats = {
             "algorithm": "Not applicable",
             "steps": 0,
@@ -142,11 +178,8 @@ def simulate_single_game(input_file, output_file, no_solution_due_to_cats=False)
         wait_for_exit()
         return
 
-    # Parse simulation results normally if only one cat is present
     stats = parse_output(output_file)
-    
-    # Pass a value (e.g., True) for `playing` to simulate
-    simulate(grid, stats["path"], stats, playing=True)
+    simulate(grid, stats["path"], stats, playing=True, original_grid=original_grid, weights=weights)
 
 def wait_for_exit():
     while True:
