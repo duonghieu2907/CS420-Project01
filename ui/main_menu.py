@@ -1,48 +1,129 @@
 import pygame
+import os
 import sys
-from ui_utility import *
-from map_menu import *
+from .ui_utility import *
+from .pause_menu import choose_algorithm_menu
+from .simulate_game import simulate_single_game
 
-# Position the buttons to be evenly spaced below the title
-start_button = Button("Start Game", (WIDTH // 2, HEIGHT // 2))
-credit_button = Button("Credit", (WIDTH // 2, HEIGHT // 2 + BUTTON_SPACING))
-quit_button = Button("Quit", (WIDTH // 2, HEIGHT // 2 + 2 * BUTTON_SPACING))
+# Project root and folders for input/output
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+input_folder = os.path.join(project_root, "input")
+output_folder = os.path.join(project_root, "output")
 
-# Main menu function
+# Initialize list of maps and pagination settings
+map_files = sorted([f for f in os.listdir(input_folder) if f.endswith(".txt")])
+current_map_idx = 0
+
+# Function to render map with optional page and additional instructions text
+def render_map(grid, page_text, additional_text=""):
+    screen.fill(BACKGROUND_COLOR)
+    
+    # Render page indicator
+    page_text_rendered = FONT.render(page_text, True, (0, 0, 0))
+    screen.blit(page_text_rendered, (WIDTH // 2 - page_text_rendered.get_width() // 2, 10))
+
+    # Render grid
+    for i, row in enumerate(grid):
+        for j, cell in enumerate(row):
+            x, y = j * SQUARE_SIZE, HEADER_HEIGHT + i * SQUARE_SIZE
+            screen.blit(IMAGES.get(cell, IMAGES[" "]), (x, y))
+
+    # Render navigation instructions
+    instructions = FONT.render("Use LEFT and RIGHT arrow keys to navigate maps.", True, (0, 0, 0))
+    screen.blit(instructions, (WIDTH // 2 - instructions.get_width() // 2, HEIGHT + HEADER_HEIGHT + 10))
+
+    # Render additional text, if provided
+    if additional_text:
+        additional_text_rendered = FONT.render(additional_text, True, (0, 0, 0))
+        screen.blit(additional_text_rendered, (WIDTH // 2 - additional_text_rendered.get_width() // 2, HEIGHT + HEADER_HEIGHT - 40))
+
+# Function to render the map display with navigation arrows and click-to-select
+def map_selection_screen():
+    global current_map_idx
+    running = True
+
+    # Main loop for map selection screen
+    while running:
+        screen.fill(BACKGROUND_COLOR)
+        
+        # Load and display the current map
+        map_file = os.path.join(input_folder, map_files[current_map_idx])
+        grid, no_solution_due_to_cats = load_map(map_file, skip_first_line=True)
+        map_number = current_map_idx + 1
+        page_text = f"Map {map_number} of {len(map_files)}"
+        
+        # Render map centered on the screen
+        render_map(grid, page_text, additional_text="Click to select this map")
+        
+        # Draw navigation arrows for previous and next maps
+        mouse_pos = pygame.mouse.get_pos()
+        if current_map_idx > 0:
+            draw_arrow_button(screen, "left", (60, HEIGHT - 40), mouse_pos)
+        if current_map_idx < len(map_files) - 1:
+            draw_arrow_button(screen, "right", (WIDTH - 60, HEIGHT - 40), mouse_pos)
+
+        # Event handling for navigation and map selection
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Navigate to previous map
+                if current_map_idx > 0 and pygame.Rect(40, HEIGHT - 60, 40, 40).collidepoint(mouse_pos):
+                    current_map_idx -= 1
+                # Navigate to next map
+                elif current_map_idx < len(map_files) - 1 and pygame.Rect(WIDTH - 80, HEIGHT - 60, 40, 40).collidepoint(mouse_pos):
+                    current_map_idx += 1
+                # Select the current map and go to algorithm choice
+                else:
+                    # Algorithm selection for the chosen map
+                    chosen_algorithm = choose_algorithm_menu(screen, map_number)
+                    if chosen_algorithm:
+                        # Define output file path based on chosen algorithm
+                        algorithm_output_folder = os.path.join(output_folder, chosen_algorithm.replace("*", "_star"))
+                        output_file = os.path.join(algorithm_output_folder, f"output-{map_number:02d}.txt")
+                        print(f"Map {map_number} selected with {chosen_algorithm} algorithm!")
+                        
+                        # Run the simulation for the selected map and algorithm
+                        simulate_single_game(map_file, output_file, no_solution_due_to_cats)
+
+        # Update the display
+        pygame.display.flip()
+
+# Function to initialize Pygame and open the main menu
 def main_menu():
     while True:
         screen.fill(BACKGROUND_COLOR)
 
-        # Draw title
+        # Draw title and buttons for main menu
         title_text = title_font.render("Knitting Kitten", True, TITLE_COLOR)
         title_rect = title_text.get_rect(center=(WIDTH // 2, HEIGHT // 4))
         screen.blit(title_text, title_rect)
 
-        # Get mouse position
+        # Get mouse position and button instances
         mouse_pos = pygame.mouse.get_pos()
+        start_button = Button("Start Game", (WIDTH // 2, HEIGHT // 2))
+        credit_button = Button("Credit", (WIDTH // 2, HEIGHT // 2 + BUTTON_SPACING))
+        quit_button = Button("Quit", (WIDTH // 2, HEIGHT // 2 + 2 * BUTTON_SPACING))
 
         # Draw buttons
         start_button.draw(screen, mouse_pos)
         credit_button.draw(screen, mouse_pos)
         quit_button.draw(screen, mouse_pos)
 
-        # Event handling
+        # Event handling for main menu buttons
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button.is_clicked(mouse_pos):
-                    map_select_menu()  # Opens the map selection menu
+                    map_selection_screen()  # Start the map selection screen
                 elif credit_button.is_clicked(mouse_pos):
-                    print("Credit clicked!")
-                    # Insert credit logic here
+                    print("Credit screen (not implemented)")  # Placeholder for credit screen
                 elif quit_button.is_clicked(mouse_pos):
                     pygame.quit()
                     sys.exit()
 
         # Update display
         pygame.display.flip()
-
-# Run the menu
-main_menu()
