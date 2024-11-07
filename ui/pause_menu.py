@@ -1,6 +1,6 @@
 import pygame
 import sys
-from ui_utility import *
+from .ui_utility import *
 
 # Algorithm selection menu with default background and map number display
 def choose_algorithm_menu(screen, map_number):
