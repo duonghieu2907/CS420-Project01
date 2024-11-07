@@ -1,8 +1,6 @@
 import pygame
 import time
-import os
 from .ui_utility import *
-from .pause_menu import choose_algorithm_menu
 
 # Define movement directions for the simulation
 directions = [(-1, 0, 'u', 'U'), (1, 0, 'd', 'D'), (0, -1, 'l', 'L'), (0, 1, 'r', 'R')]
@@ -29,7 +27,6 @@ def find_ares_position(grid):
     return None
 
 def load_weights(file_path):
-    """Load the weights of stones from the first line of the input file."""
     with open(file_path, 'r') as f:
         first_line = f.readline().strip()
         weights = list(map(int, first_line.split(',')))  # Assuming weights are comma-separated
@@ -77,26 +74,26 @@ def find_stone_index(grid, stone_x, stone_y):
     return None
 
 def render_simulation_controls(stats, speed, step_count, total_weight, paused):
-    # Define the control area
-    controls_rect = pygame.Rect(20, HEIGHT + HEADER_HEIGHT - 150, 960, 140)
+    # Define the control area on the right side of the screen
+    controls_rect = pygame.Rect(WIDTH - 240, 20, 220, 360) 
     pygame.draw.rect(screen, (200, 200, 200), controls_rect, border_radius=10)
 
     # Display step and weight information
     step_text = FONT.render(f"Steps: {step_count}", True, (0, 0, 0))
     weight_text = FONT.render(f"Weight: {total_weight}", True, (0, 0, 0))
+    speed_text = FONT.render("Speed:", True, (0, 0, 0))
+
     screen.blit(step_text, (controls_rect.x + 20, controls_rect.y + 20))
     screen.blit(weight_text, (controls_rect.x + 20, controls_rect.y + 60))
-
+    
     # Display speed bar
-    pygame.draw.rect(screen, (200, 200, 200), (controls_rect.x + 220, controls_rect.y + 20, 200, 20))
-    pygame.draw.rect(screen, (0, 128, 255), (controls_rect.x + 220, controls_rect.y + 20, int(speed * 2), 20))
-    speed_text = FONT.render("Speed:", True, (0, 0, 0))
-    screen.blit(speed_text, (controls_rect.x + 220, controls_rect.y))
+    pygame.draw.rect(screen, (200, 200, 200), (controls_rect.x + 20, controls_rect.y + 140, 180, 20))
+    pygame.draw.rect(screen, (0, 128, 255), (controls_rect.x + 20, controls_rect.y + 140, int(speed * 2), 20))
+    screen.blit(speed_text, (controls_rect.x + 20, controls_rect.y + 100))
 
     # Pause/Resume button and Restart button
-    pause_text = "Resume" if paused else "Pause"
-    pause_button = Button(pause_text, (controls_rect.x + 550, controls_rect.y + 60))
-    restart_button = Button("Restart", (controls_rect.x + 750, controls_rect.y + 60))
+    pause_button = Button("Pause", (controls_rect.x + 110, controls_rect.y + 220))
+    restart_button = Button("Restart", (controls_rect.x + 110, controls_rect.y + 300))
 
     pause_button.draw(screen, pygame.mouse.get_pos())
     restart_button.draw(screen, pygame.mouse.get_pos())
