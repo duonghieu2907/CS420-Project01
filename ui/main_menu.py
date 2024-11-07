@@ -64,16 +64,16 @@ def map_selection_screen():
     # Main loop for map selection screen
     while running:
         screen.fill(BACKGROUND_COLOR)
-        
+
         # Load and display the current map along with stone weights
         map_file = os.path.join(input_folder, map_files[current_map_idx])
         grid, weights = load_map_with_weights(map_file)  # Load map and weights
         map_number = current_map_idx + 1
         page_text = f"Map {map_number} of {len(map_files)}"
-        
+
         # Render map centered on the screen with weights displayed above stones
         render_map(grid, weights, page_text, additional_text="Click to select this map")
-        
+
         # Draw navigation arrows for previous and next maps
         mouse_pos = pygame.mouse.get_pos()
         if current_map_idx > 0:
@@ -81,14 +81,21 @@ def map_selection_screen():
         if current_map_idx < len(map_files) - 1:
             draw_arrow_button(screen, "right", (WIDTH - 60, HEIGHT - 40), mouse_pos)
 
+        # Create a back button
+        back_button = Button("Back", (30, 20), font = small_font)
+        back_button.draw(screen, mouse_pos)
+
         # Event handling for navigation and map selection
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Check if the back button is clicked
+                if back_button.is_clicked(event.pos):
+                    running = False  # Exit the map selection screen and return to main menu
                 # Navigate to previous map
-                if current_map_idx > 0 and pygame.Rect(40, HEIGHT - 60, 40, 40).collidepoint(mouse_pos):
+                elif current_map_idx > 0 and pygame.Rect(40, HEIGHT - 60, 40, 40).collidepoint(mouse_pos):
                     current_map_idx -= 1
                 # Navigate to next map
                 elif current_map_idx < len(map_files) - 1 and pygame.Rect(WIDTH - 80, HEIGHT - 60, 40, 40).collidepoint(mouse_pos):
@@ -102,11 +109,49 @@ def map_selection_screen():
                         algorithm_output_folder = os.path.join(output_folder, chosen_algorithm.replace("*", "_star"))
                         output_file = os.path.join(algorithm_output_folder, f"output-{map_number:02d}.txt")
                         print(f"Map {map_number} selected with {chosen_algorithm} algorithm!")
-                        
+
                         # Run the simulation for the selected map and algorithm
                         simulate_single_game(map_file, output_file, weights)
 
         # Update the display
+        pygame.display.flip()
+
+def show_credits():
+    running = True
+    title_font = pygame.font.Font(None, 60)
+    while running:
+        screen.fill(BACKGROUND_COLOR)
+
+        # Display credit text
+        credit_text = title_font.render("Game developed by Team Knitting Kitten", True, TITLE_COLOR)
+        credit_rect = credit_text.get_rect(center=(WIDTH // 2, HEIGHT // 3))
+        screen.blit(credit_text, credit_rect)
+
+        # Display team member names
+        names = [
+            "Duong Trung Hieu",
+            "Duong Ngoc Quang Khiem",
+            "Cao Vo Nhat Minh",
+            "Tran Nhat Thanh"
+        ]
+        for index, name in enumerate(names):
+            name_text = FONT.render(name, True, TITLE_COLOR)
+            name_rect = name_text.get_rect(center=(WIDTH // 2, HEIGHT // 3 + (index + 2) * 30))  # Spacing names
+            screen.blit(name_text, name_rect)
+
+        # Create a back button
+        back_button = Button("Back", (30, 20), font = small_font)
+        back_button.draw(screen, pygame.mouse.get_pos())
+
+        # Event handling for quitting the credits screen or going back
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if back_button.is_clicked(event.pos):
+                    running = False  # Exit credits screen when back button is clicked
+
         pygame.display.flip()
 
 # Function to initialize Pygame and open the main menu
@@ -139,7 +184,7 @@ def main_menu():
                 if start_button.is_clicked(mouse_pos):
                     map_selection_screen()  # Start the map selection screen
                 elif credit_button.is_clicked(mouse_pos):
-                    print("Credit screen (not implemented)")  # Placeholder for credit screen
+                    show_credits() 
                 elif quit_button.is_clicked(mouse_pos):
                     pygame.quit()
                     sys.exit()
