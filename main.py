@@ -10,9 +10,12 @@ input_folder = os.path.join(project_root, "input")
 output_folder = os.path.join(project_root, "output")
 
 def main():
-    # Initialize Pygame and open the main menu
+    # Run the algorithms
+    """print("Processing...")
+    process_all_algorithms(input_folder, output_folder)"""
+    
+    # Initialize Pygame after processing is complete
     pygame.init()
-    # process_all_algorithms(input_folder, output_folder)
     main_menu()
 
 if __name__ == "__main__":
