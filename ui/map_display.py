@@ -1,7 +1,7 @@
 import pygame
 import os
-from ui_utility import screen, IMAGES, FONT, SQUARE_SIZE, BACKGROUND_COLOR, WIDTH, HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT, load_map
-from simulate_game import  parse_output, simulate
+from ui_utility import *
+from simulate_game import *
 
 # Navigate to the CS420-Project01 folder
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))

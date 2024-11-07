@@ -14,7 +14,7 @@ def main_menu():
         screen.fill(BACKGROUND_COLOR)
 
         # Draw title
-        title_text = title_font.render("Sokoban", True, TITLE_COLOR)
+        title_text = title_font.render("Knitting Kitten", True, TITLE_COLOR)
         title_rect = title_text.get_rect(center=(WIDTH // 2, HEIGHT // 4))
         screen.blit(title_text, title_rect)
 

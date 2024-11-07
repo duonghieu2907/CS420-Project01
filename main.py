@@ -4,34 +4,44 @@ from search_algorithms.BFS import BFS_process_input_files
 from search_algorithms.DFS import DFS_process_input_files
 from search_algorithms.A_star import A_star_process_input_files
 
+def write_results_to_folder(algorithm_name, results):
+    # Create the subfolder for the algorithm under the output folder
+    algorithm_folder = os.path.join(output_folder, algorithm_name)
+    os.makedirs(algorithm_folder, exist_ok=True)
+    
+    # Write results to the respective algorithm's folder
+    for idx, result in enumerate(results):
+        output_file = f"output-{idx + 1:02}.txt"
+        output_path = os.path.join(algorithm_folder, output_file)
+        with open(output_path, 'w') as f:
+            f.write(f"{result['algorithm']}\n")
+            if result['error_message']:
+                f.write(f"{result['error_message']}\n\n")
+            elif isinstance(result['final_state'], str):
+                f.write(result['final_state'] + "\n\n")
+            else:
+                f.write(f"Steps: {len(result['final_state'].path)}\n")
+                f.write(f"Total Weight Pushed: {result['final_state'].cost - len(result['final_state'].path)}\n")
+                f.write(f"Nodes Generated: {result['nodes_generated']}\n")
+                f.write(f"Time Taken: {result['time_taken']:.4f} seconds\n")
+                f.write(f"Memory Used: {result['memory_used'] / 1024:.2f} KB\n")
+                f.write(result['final_state'].path + "\n\n")
+
 if __name__ == "__main__":
     input_folder = 'input'
     output_folder = 'output'
 
-    # Ensure the output folder exists
+    # Ensure the main output folder exists
     os.makedirs(output_folder, exist_ok=True)
     
-    # Process input files with all search algorithms
-    # ucs_results = UCS_process_input_files(input_folder)
-    # bfs_results = BFS_process_input_files(input_folder)
-    # dfs_results = DFS_process_input_files(input_folder)
+    # Process input files with each search algorithm and save to their respective subfolder
+    ucs_results = UCS_process_input_files(input_folder)
+    bfs_results = BFS_process_input_files(input_folder)
+    dfs_results = DFS_process_input_files(input_folder)
     a_star_results = A_star_process_input_files(input_folder)
 
-    for idx in range(len(a_star_results)):
-        output_file = f"output-{idx + 1:02}.txt"
-        output_path = os.path.join(output_folder, output_file)
-        with open(output_path, 'w') as f:
-            for results in [a_star_results]:
-                f.write(f"{results[idx]['algorithm']}\n")
-                if results[idx]['error_message']:
-                    f.write(f"{results[idx]['error_message']}\n\n")
-                elif type(results[idx]['final_state']) == str:
-                    f.write(results[idx]['final_state'] + "\n\n")
-                else:
-                    f.write(f"Steps: {len(results[idx]['final_state'].path)}\n")
-                    f.write(f"Total Weight Pushed: {results[idx]['final_state'].cost - len(results[idx]['final_state'].path)}\n")
-                    f.write(f"Nodes Generated: {results[idx]['nodes_generated']}\n")
-                    f.write(f"Time Taken: {results[idx]['time_taken']:.4f} seconds\n")
-                    f.write(f"Memory Used: {results[idx]['memory_used'] / 1024:.2f} KB\n")
-                    f.write(results[idx]['final_state'].path + "\n\n")
-
+    # Write each algorithm's results to its own subfolder
+    write_results_to_folder("UCS", ucs_results)
+    write_results_to_folder("BFS", bfs_results)
+    write_results_to_folder("DFS", dfs_results)
+    write_results_to_folder("A_star", a_star_results)

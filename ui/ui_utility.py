@@ -20,6 +20,8 @@ HOVER_COLOR = (221, 161, 94)
 BUTTON_TEXT_COLOR = (255, 255, 255)  # White text on buttons
 TITLE_TEXT_COLOR = (96, 108, 56)    # Title text color
 
+BUTTON_SPACING = 80  # Vertical spacing between buttons
+
 # Square size for grid elements
 SQUARE_SIZE = 60
 
