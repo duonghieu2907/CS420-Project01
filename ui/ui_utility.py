@@ -30,6 +30,7 @@ title_font = pygame.font.Font(None, 150)
 title_map_font = pygame.font.Font(None, 100)
 button_font = pygame.font.Font(None, 50)
 button_map_font = pygame.font.Font(None, 40)
+small_font = pygame.font.Font(None, 30)
 FONT = pygame.font.Font(None, 36)
 
 # Get the absolute path to the "items" folder relative to the current file
@@ -101,17 +102,18 @@ def render_simulation(grid, stats, speed, display_end_text=False, no_solution=Fa
         screen.blit(weight_text, (WIDTH - 300, HEIGHT - 130 + HEADER_HEIGHT))
         screen.blit(step_text, (WIDTH - 300, HEIGHT - 160 + HEADER_HEIGHT))
 
+        # Display navigation exit message
+        exit_text = FONT.render("Press ESC to exit", True, (0, 0, 0))
+        screen.blit(exit_text, (WIDTH // 2 - exit_text.get_width() // 2, HEIGHT + HEADER_HEIGHT - 10))
 
-    # Display navigation
-    exit_text = FONT.render("Press ESC to exit", True, (0, 0, 0))
-    screen.blit(exit_text, (WIDTH // 2 - exit_text.get_width() // 2, HEIGHT + HEADER_HEIGHT - 10))
-
-# Button classes and functions (Button, MapButton, and draw_arrow_button)
+# Button classes and functions
 class Button:
-    def __init__(self, text, pos):
+    def __init__(self, text, pos, font=None):
         self.text = text
         self.pos = pos
-        self.rendered_text = button_font.render(self.text, True, BUTTON_TEXT_COLOR)
+        # Use the provided font or fall back to a default font
+        self.font = font if font else button_font  
+        self.rendered_text = self.font.render(self.text, True, BUTTON_TEXT_COLOR)
         self.rect = self.rendered_text.get_rect(center=self.pos)
 
     def draw(self, screen, mouse_pos):

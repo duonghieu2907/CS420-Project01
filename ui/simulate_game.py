@@ -75,7 +75,7 @@ def find_stone_index(grid, stone_x, stone_y):
 
 def render_simulation_controls(stats, speed, step_count, total_weight, paused):
     # Define the control area on the right side of the screen
-    controls_rect = pygame.Rect(WIDTH - 240, 20, 220, 360) 
+    controls_rect = pygame.Rect(WIDTH - 260, 20, 250, 420)
     pygame.draw.rect(screen, (200, 200, 200), controls_rect, border_radius=10)
 
     # Display step and weight information
@@ -91,9 +91,16 @@ def render_simulation_controls(stats, speed, step_count, total_weight, paused):
     pygame.draw.rect(screen, (0, 128, 255), (controls_rect.x + 20, controls_rect.y + 140, int(speed * 2), 20))
     screen.blit(speed_text, (controls_rect.x + 20, controls_rect.y + 100))
 
+    # Add instructions for changing speed
+    speed_instruction_text_1 = small_font.render("Use LEFT and RIGHT", True, (0, 0, 0))
+    speed_instruction_text_2 = small_font.render("keys to change speed", True, (0, 0, 0))
+
+    screen.blit(speed_instruction_text_1, (controls_rect.x + 20, controls_rect.y + 170))
+    screen.blit(speed_instruction_text_2, (controls_rect.x + 20, controls_rect.y + 200))
+
     # Pause/Resume button and Restart button
-    pause_button = Button("Pause", (controls_rect.x + 110, controls_rect.y + 220))
-    restart_button = Button("Restart", (controls_rect.x + 110, controls_rect.y + 300))
+    pause_button = Button("Pause", (controls_rect.x + 125, controls_rect.y + 280))
+    restart_button = Button("Restart", (controls_rect.x + 125, controls_rect.y + 360))
 
     pause_button.draw(screen, pygame.mouse.get_pos())
     restart_button.draw(screen, pygame.mouse.get_pos())
