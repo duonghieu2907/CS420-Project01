@@ -46,8 +46,12 @@ def render_simulation(grid, stats, speed, display_end_text=False, no_solution=Fa
     if display_end_text and not no_solution:
         time_text = FONT.render(f"Time: {stats['time_taken']} seconds", True, (0, 0, 0))
         memory_text = FONT.render(f"Memory: {stats['memory_used']} KB", True, (0, 0, 0))
+        weight_text = FONT.render(f"Weight: {stats['total_weight']} $", True, (0, 0, 0))
+        step_text = FONT.render(f"Step: {stats['steps']} ", True, (0, 0, 0))
         screen.blit(time_text, (WIDTH - 300, HEIGHT - 100 + HEADER_HEIGHT))
         screen.blit(memory_text, (WIDTH - 300, HEIGHT - 70 + HEADER_HEIGHT))
+        screen.blit(weight_text, (WIDTH - 300, HEIGHT - 130 + HEADER_HEIGHT))
+        screen.blit(step_text, (WIDTH - 300, HEIGHT - 160 + HEADER_HEIGHT))
 
     # Display persistent instructions at the bottom
     pause_text = FONT.render("Press SPACE to pause, SPACE again to continue", True, (0, 0, 0))
@@ -103,8 +107,8 @@ def simulate(grid, path, stats, playing):
             pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    #pygame.quit()
-                    playing = False
+                    pygame.quit()
+                    #playing = False
                     return
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
@@ -121,8 +125,8 @@ def simulate(grid, path, stats, playing):
         # Handle main simulation events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                #pygame.quit()
-                playing = False
+                pygame.quit()
+                #playing = False
                 return
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -151,8 +155,8 @@ def simulate(grid, path, stats, playing):
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                #pygame.quit()
-                playing = False
+                pygame.quit()
+                #playing = False
                 return
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 #pygame.quit()
