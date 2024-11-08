@@ -1,8 +1,8 @@
 Uniform Cost Search
 Steps: 43
-Total Weight Pushed: 600
+Total Weight Pushed: 643
 Nodes Generated: 5721
-Time Taken: 0.1547 seconds
+Time Taken: 0.2088 seconds
 Memory Used: 796.21 KB
 lluRuRlddrUrUrrdLLLdlluRuRRdLulDrrrruLLLddL
 
