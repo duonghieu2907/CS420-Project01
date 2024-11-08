@@ -20,6 +20,10 @@ def choose_algorithm_menu(screen, map_number):
 
         # Get the mouse position
         mouse_pos = pygame.mouse.get_pos()
+        
+        # Create a back button
+        back_button = Button("Back", (30, 20), font = small_font)
+        back_button.draw(screen, mouse_pos)
 
         # Draw algorithm buttons
         for button in algorithm_buttons:
@@ -31,6 +35,9 @@ def choose_algorithm_menu(screen, map_number):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Check if the back button is clicked
+                if back_button.is_clicked(event.pos):
+                    return  # Exit the map selection screen and return to main menu
                 for button in algorithm_buttons:
                     if button.is_clicked(mouse_pos):
                         print(f"Algorithm {button.text} selected.")
