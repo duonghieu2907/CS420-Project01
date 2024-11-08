@@ -96,20 +96,3 @@ def get_successors(state, weights, grid) -> List[State]:
                     successors.append(State(new_ares_pos, new_stones, state.cost + stone_weight + 1, state.path + push))
 
     return successors
-
-
-def write_output(file, algorithm_name, state, nodes_generated, time_taken, memory_used):
-    with open(file, 'w') as f:
-        f.write(f"{algorithm_name}\n")
-        f.write(f"Steps: {len(state.path)}\n")
-        f.write(f"Total Weight Pushed: {state.cost - len(state.path)}\n")
-        f.write(f"Nodes Generated: {nodes_generated}\n")
-        f.write(f"Time Taken: {time_taken:.4f} seconds\n")
-        f.write(f"Memory Used: {memory_used / 1024:.2f} KB\n")
-        f.write(state.path + "\n")
-
-
-def write_error_output(file_path, error_message):
-    with open(file_path, 'w') as f:
-        f.write("Error\n")
-        f.write(error_message + "\n")

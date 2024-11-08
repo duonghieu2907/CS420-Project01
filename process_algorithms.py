@@ -21,7 +21,7 @@ def write_results_to_folder(algorithm_name, results, output_folder):
                 f.write(result['final_state'] + "\n\n")
             else:
                 f.write(f"Steps: {len(result['final_state'].path)}\n")
-                f.write(f"Total Weight Pushed: {result['final_state'].cost - len(result['final_state'].path)}\n")
+                f.write(f"Total Weight Pushed: {result['final_state'].cost}\n")
                 f.write(f"Nodes Generated: {result['nodes_generated']}\n")
                 f.write(f"Time Taken: {result['time_taken']:.4f} seconds\n")
                 f.write(f"Memory Used: {result['memory_used'] / 1024:.2f} KB\n")
