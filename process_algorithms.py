@@ -28,10 +28,6 @@ def write_results_to_folder(algorithm_name, results, output_folder):
                 f.write(result['final_state'].path + "\n\n")
 
 def process_all_algorithms(input_folder, output_folder):
-    # Determine the input folder relative to the script's location
-    script_dir = os.path.dirname(__file__)
-    input_folder = os.path.join(script_dir, "input")
-
     # Process input files with each search algorithm and save to their respective subfolder
     ucs_results = UCS_process_input_files(input_folder)
     bfs_results = BFS_process_input_files(input_folder)

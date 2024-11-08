@@ -6,8 +6,8 @@ from process_algorithms import process_all_algorithms
 
 # Navigate to the project root and ensure input/output folders are set up
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-input_folder = os.path.join(project_root, "input")
-output_folder = os.path.join(project_root, "output")
+input_folder = os.path.join(project_root, "CS420-Project01", "input")
+output_folder = os.path.join(project_root, "CS420-Project01", "output")
 
 def main():
     # Run the algorithms
