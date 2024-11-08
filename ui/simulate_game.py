@@ -1,3 +1,4 @@
+import pyautogui
 import pygame
 import time
 from .ui_utility import *
@@ -8,16 +9,25 @@ directions = [(-1, 0, 'u', 'U'), (1, 0, 'd', 'D'), (0, -1, 'l', 'L'), (0, 1, 'r'
 def parse_output(file_path):
     with open(file_path, 'r') as f:
         lines = f.readlines()
-    stats = {
-        "algorithm": lines[0].strip(),
-        "steps": int(lines[1].split(": ")[1]),
-        "total_weight": int(lines[2].split(": ")[1]),
-        "nodes_generated": int(lines[3].split(": ")[1]),
-        "time_taken": float(lines[4].split(": ")[1].split()[0]),
-        "memory_used": float(lines[5].split(": ")[1].split()[0]),
-        "path": lines[6].strip() if len(lines) > 6 else "No solution"
-    }
-    return stats
+
+    try:
+        stats = {
+            "algorithm": lines[0].strip(),
+            "steps": int(lines[1].split(": ")[1]),
+            "total_weight": int(lines[2].split(": ")[1]),
+            "nodes_generated": int(lines[3].split(": ")[1]),
+            "time_taken": float(lines[4].split(": ")[1].split()[0]),
+            "memory_used": float(lines[5].split(": ")[1].split()[0]),
+            "path": lines[6].strip() if len(lines) > 6 else "No solution"
+        }
+        return stats
+    except:
+        stats = {
+            "algorithm": lines[0].strip(),
+            "error": lines[1].strip()
+        }
+        return stats
+
 
 def find_ares_position(grid):
     for i, row in enumerate(grid):
@@ -207,7 +217,12 @@ def simulate_single_game(input_file, output_file, weights, no_solution_due_to_ca
         return
 
     stats = parse_output(output_file)
-    simulate(grid, stats["path"], stats, playing=True, original_grid=original_grid, weights=weights, stone_index_list= stone_index_list)
+    if 'error' not in stats:
+        simulate(grid, stats["path"], stats, playing=True, original_grid=original_grid, weights=weights, stone_index_list= stone_index_list)
+    else:
+        print(stats['error'])
+        pyautogui.alert(stats['error'])
+
 
 def wait_for_exit():
     while True:
