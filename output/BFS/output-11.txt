@@ -1,8 +1,8 @@
 Breadth-First Search
-Steps: 26
-Total Weight Pushed: 704
-Nodes Generated: 402060
-Time Taken: 11.5715 seconds
-Memory Used: 70207.11 KB
-ddLulDDDDDDuuRRRRRRRRurDDD
+Steps: 25
+Total Weight Pushed: 702
+Nodes Generated: 255440
+Time Taken: 6.8405 seconds
+Memory Used: 48730.05 KB
+uuuuuLulDDDDDDRRRRRRRRurD
 
