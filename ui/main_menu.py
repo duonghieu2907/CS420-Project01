@@ -41,10 +41,10 @@ def render_map(grid, weights, page_text, additional_text=""):
             x, y = j * SQUARE_SIZE, HEADER_HEIGHT + i * SQUARE_SIZE
             screen.blit(IMAGES.get(cell, IMAGES[" "]), (x, y))
             
-            # If the cell is a stone, display the corresponding weight above it
-            if cell == '$' and weight_index < len(weights):
+            # If the cell is a stone or a stone in the basket (marked by $ or *), display the corresponding weight above it
+            if (cell == '$' or cell == '*') and weight_index < len(weights):
                 weight_text = FONT.render(str(weights[weight_index]), True, (255, 255, 255))
-                screen.blit(weight_text, (x + SQUARE_SIZE // 4, y - 5))
+                screen.blit(weight_text, (x + SQUARE_SIZE // 4, y - 5))  # Display weight above the yarn
                 weight_index += 1
 
     # Render navigation instructions
