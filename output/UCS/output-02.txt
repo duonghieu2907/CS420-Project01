@@ -3,6 +3,6 @@ Steps: 7
 Total Weight Pushed: 22
 Nodes Generated: 73
 Time Taken: 0.0020 seconds
-Memory Used: 7.01 KB
+Memory Used: 5.62 KB
 rrddLLL
 

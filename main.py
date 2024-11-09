@@ -11,8 +11,8 @@ output_folder = os.path.join(project_root, "CS420-Project01", "output")
 
 def main():
     # Run the algorithms
-    """print("Processing...")
-    process_all_algorithms(input_folder, output_folder)"""
+    print("Processing...")
+    process_all_algorithms(input_folder, output_folder)
     
     # Initialize Pygame after processing is complete
     pygame.init()
