@@ -2,7 +2,7 @@ Depth-First Search
 Steps: 66
 Total Weight Pushed: 172
 Nodes Generated: 66
-Time Taken: 0.1562 seconds
-Memory Used: 566.34 KB
+Time Taken: 0.1983 seconds
+Memory Used: 643.50 KB
 RuuuurrdLulDDDDldRRRuLdlUUUdddrurrrdLulldluuuruulDDDDrdLurdRurrdLL
 
