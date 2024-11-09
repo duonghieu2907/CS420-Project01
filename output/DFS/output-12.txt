@@ -1,8 +1,3 @@
 Depth-First Search
-Steps: 115
-Total Weight Pushed: 1015
-Nodes Generated: 115
-Time Taken: 3.2941 seconds
-Memory Used: 60447.35 KB
-uldddrUdluuurrDulDuldddrUdluuRuldddruRdluuurDuldddrrUdlUdluuurDulddRuuldddrrruuLulDuldddrUdrUdluluurDuldddrruLuuldD
+The searching got over the limit of recursion
 
