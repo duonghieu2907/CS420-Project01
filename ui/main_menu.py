@@ -43,8 +43,8 @@ def render_map(grid, weights, page_text, additional_text=""):
             
             # If the cell is a stone, display the corresponding weight above it
             if cell == '$' and weight_index < len(weights):
-                weight_text = FONT.render(str(weights[weight_index]), True, (255, 255, 255))  # White color for weight text
-                screen.blit(weight_text, (x + SQUARE_SIZE // 4, y - 5))  # Position the weight above the stone
+                weight_text = FONT.render(str(weights[weight_index]), True, (255, 255, 255))
+                screen.blit(weight_text, (x + SQUARE_SIZE // 4, y - 5))
                 weight_index += 1
 
     # Render navigation instructions
@@ -113,9 +113,9 @@ def map_selection_screen():
                         # Run the simulation for the selected map and algorithm
                         simulate_single_game(map_file, output_file, weights)
 
-        # Update the display
         pygame.display.flip()
 
+# Function to show credits
 def show_credits():
     running = True
     title_font = pygame.font.Font(None, 60)
@@ -189,5 +189,4 @@ def main_menu():
                     pygame.quit()
                     sys.exit()
 
-        # Update display
         pygame.display.flip()

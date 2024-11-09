@@ -76,7 +76,7 @@ def load_map(file_path, skip_first_line=True):
         print(f"Error parsing file {file_path}: {e}")
         return None, True  # Indicate an error in loading
     
-# Function to render the simulation, displaying "No solution found" if needed
+# Function to render the simulation
 def render_simulation(grid, stats, speed, display_end_text=False, no_solution=False):
     screen.fill(BACKGROUND_COLOR)
     
@@ -128,7 +128,6 @@ class Button:
     def is_clicked(self, mouse_pos):
         return self.rect.collidepoint(mouse_pos)
 
-
 class MapButton:
     def __init__(self, text, pos):
         self.text = text
@@ -156,7 +155,6 @@ class MapButton:
 
     def is_clicked(self, mouse_pos):
         return self.rect.collidepoint(mouse_pos)
-
 
 def draw_arrow_button(screen, direction, pos, mouse_pos):
     arrow_color = HOVER_COLOR if pygame.Rect(pos[0] - 20, pos[1] - 20, 40, 40).collidepoint(mouse_pos) else BUTTON_COLOR
