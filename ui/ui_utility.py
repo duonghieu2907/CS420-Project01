@@ -76,7 +76,7 @@ def load_map(file_path, skip_first_line=True):
         print(f"Error parsing file {file_path}: {e}")
         return None, True  # Indicate an error in loading
     
-# Function to render the simulation, displaying "No solution found" if needed
+# Function to render the simulation
 def render_simulation(grid, stats, speed, display_end_text=False, no_solution=False):
     screen.fill(BACKGROUND_COLOR)
     
@@ -95,7 +95,7 @@ def render_simulation(grid, stats, speed, display_end_text=False, no_solution=Fa
     if display_end_text and not no_solution:
         step_text = FONT.render(f"Steps: {stats['steps']}", True, (0, 0, 0))
         weight_text = FONT.render(f"Weight: {stats['total_weight']} $", True, (0, 0, 0))
-        nodes_text = FONT.render(f"Nodes Generated: {stats['nodes_generated']}", True, (0, 0, 0))
+        nodes_text = FONT.render(f"Nodes: {stats['nodes_generated']}", True, (0, 0, 0))
         time_text = FONT.render(f"Time: {stats['time_taken']} seconds", True, (0, 0, 0))
         memory_text = FONT.render(f"Memory: {stats['memory_used']} KB", True, (0, 0, 0))
 
@@ -128,7 +128,6 @@ class Button:
     def is_clicked(self, mouse_pos):
         return self.rect.collidepoint(mouse_pos)
 
-
 class MapButton:
     def __init__(self, text, pos):
         self.text = text
@@ -156,7 +155,6 @@ class MapButton:
 
     def is_clicked(self, mouse_pos):
         return self.rect.collidepoint(mouse_pos)
-
 
 def draw_arrow_button(screen, direction, pos, mouse_pos):
     arrow_color = HOVER_COLOR if pygame.Rect(pos[0] - 20, pos[1] - 20, 40, 40).collidepoint(mouse_pos) else BUTTON_COLOR

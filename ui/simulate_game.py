@@ -6,6 +6,7 @@ from .ui_utility import *
 # Define movement directions for the simulation
 directions = [(-1, 0, 'u', 'U'), (1, 0, 'd', 'D'), (0, -1, 'l', 'L'), (0, 1, 'r', 'R')]
 
+# Read output files
 def parse_output(file_path):
     with open(file_path, 'r') as f:
         lines = f.readlines()
@@ -28,7 +29,7 @@ def parse_output(file_path):
         }
         return stats
 
-
+# Find Ares's position
 def find_ares_position(grid):
     for i, row in enumerate(grid):
         for j, cell in enumerate(row):
@@ -36,12 +37,7 @@ def find_ares_position(grid):
                 return i, j
     return None
 
-def load_weights(file_path):
-    with open(file_path, 'r') as f:
-        first_line = f.readline().strip()
-        weights = list(map(int, first_line.split(',')))  # Assuming weights are comma-separated
-    return weights
-
+# Update grid
 def update_grid(grid, action, weights, total_weight, stone_index_list):
     ares_x, ares_y = find_ares_position(grid)
     for dx, dy, move, push in directions:
@@ -74,15 +70,7 @@ def update_grid(grid, action, weights, total_weight, stone_index_list):
             break
     return total_weight
 
-def find_stone_index(grid, stone_x, stone_y):
-    # Find the stone index based on its position
-    for i, row in enumerate(grid):
-        for j, cell in enumerate(row):
-            if cell == '$' or cell == '*':
-                if (i, j) == (stone_x, stone_y):
-                    return len([s for r in grid for s in r if s == '$'])  # Calculate the index based on position
-    return None
-
+# Display table while simulating
 def render_simulation_controls(stats, speed, step_count, total_weight, paused):
     # Define the control area on the right side of the screen
     controls_rect = pygame.Rect(WIDTH - 260, 20, 250, 420)
@@ -117,6 +105,7 @@ def render_simulation_controls(stats, speed, step_count, total_weight, paused):
 
     return pause_button, restart_button
 
+# Function to simulate
 def simulate(grid, path, stats, playing, original_grid, weights, stone_index_list):
     speed = 50
     step_count = 0
@@ -187,6 +176,7 @@ def simulate(grid, path, stats, playing, original_grid, weights, stone_index_lis
                 playing = False
                 return
 
+# Simulate each game
 def simulate_single_game(input_file, output_file, weights, no_solution_due_to_cats=False):
     grid, _ = load_map(input_file)
 
@@ -223,7 +213,7 @@ def simulate_single_game(input_file, output_file, weights, no_solution_due_to_ca
         print(stats['error'])
         pyautogui.alert(stats['error'])
 
-
+# Exit
 def wait_for_exit():
     while True:
         for event in pygame.event.get():

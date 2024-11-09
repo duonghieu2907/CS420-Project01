@@ -28,7 +28,7 @@ def write_results_to_folder(algorithm_name, results, output_folder):
                 f.write(result['final_state'].path + "\n\n")
 
 def process_all_algorithms(input_folder, output_folder):
-    # Process input files with each search algorithm and save to their respective subfolder
+    # Process input files with each search algorithm
     ucs_results = UCS_process_input_files(input_folder)
     bfs_results = BFS_process_input_files(input_folder)
     dfs_results = DFS_process_input_files(input_folder)

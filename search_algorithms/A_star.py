@@ -57,7 +57,6 @@ def a_star(weights, grid):
     tracemalloc.stop()
     return None, nodes_generated, time.time() - start_time, 0
 
-
 def heuristic_function(state, weights, grid):
     if goal_state(state, grid):
         return 0
@@ -91,7 +90,6 @@ def heuristic_function(state, weights, grid):
     total_cost = total_weighted_distance + ares_to_stones_distance
 
     return total_cost
-
 
 def A_star_process_input_files(input_folder: str) -> List[Dict[str, Any]]:
     output_data = []
