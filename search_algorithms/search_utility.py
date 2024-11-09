@@ -4,7 +4,6 @@ import time
 import tracemalloc
 from typing import List, Tuple, Dict, Any
 
-
 class State:
     def __init__(self, ares_pos, stones, cost, path=""):
         self.ares_pos = ares_pos  # Position of Ares (x, y)
@@ -14,7 +13,6 @@ class State:
 
     def __lt__(self, other):
         return self.cost < other.cost
-    
     
 def parse_input(file):
     try:
@@ -37,7 +35,6 @@ def parse_input(file):
         error_message = f"Error parsing file {file}: {e}"
         return None, None, error_message
     
-    
 def find_initial_state(grid) -> State:
     ares_pos = None
     stones = []
@@ -53,10 +50,8 @@ def find_initial_state(grid) -> State:
                 stones.append((i, j))
     return State(ares_pos, stones, 0)
 
-
 def is_valid_move(x, y, grid, stones):
-    return 0 <= x < len(grid) and 0 <= y < len(grid[0]) and grid[x][y] != '#' and (x, y) not in stones # Check if within bounds and not a wall or stone, however, the checking for stone is incorrect.
-
+    return 0 <= x < len(grid) and 0 <= y < len(grid[0]) and grid[x][y] != '#' and (x, y) not in stones
 
 def push_stone(ares_pos, stone_pos, grid, stones):
     x, y = stone_pos
@@ -66,14 +61,12 @@ def push_stone(ares_pos, stone_pos, grid, stones):
         return new_stone_pos
     return None
 
-
 def goal_state(state, grid):
     for stone_pos in state.stones:
         x, y = stone_pos
         if grid[x][y] not in {'.', '+', '*'}:
             return False
     return True
-
 
 def get_successors(state, weights, grid) -> List[State]:
     successors = []

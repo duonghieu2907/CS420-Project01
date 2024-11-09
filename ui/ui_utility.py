@@ -76,7 +76,7 @@ def load_map(file_path, skip_first_line=True):
         print(f"Error parsing file {file_path}: {e}")
         return None, True  # Indicate an error in loading
     
-# Function to render the simulation, displaying "No solution found" if needed
+# Function to render the simulation
 def render_simulation(grid, stats, speed, display_end_text=False, no_solution=False):
     screen.fill(BACKGROUND_COLOR)
     
@@ -93,14 +93,18 @@ def render_simulation(grid, stats, speed, display_end_text=False, no_solution=Fa
 
     # Display stats if applicable
     if display_end_text and not no_solution:
+        step_text = FONT.render(f"Steps: {stats['steps']}", True, (0, 0, 0))
+        weight_text = FONT.render(f"Weight: {stats['total_weight']} $", True, (0, 0, 0))
+        nodes_text = FONT.render(f"Nodes: {stats['nodes_generated']}", True, (0, 0, 0))
         time_text = FONT.render(f"Time: {stats['time_taken']} seconds", True, (0, 0, 0))
         memory_text = FONT.render(f"Memory: {stats['memory_used']} KB", True, (0, 0, 0))
-        weight_text = FONT.render(f"Weight: {stats['total_weight']} $", True, (0, 0, 0))
-        step_text = FONT.render(f"Step: {stats['steps']} ", True, (0, 0, 0))
-        screen.blit(time_text, (WIDTH - 300, HEIGHT - 100 + HEADER_HEIGHT))
-        screen.blit(memory_text, (WIDTH - 300, HEIGHT - 70 + HEADER_HEIGHT))
-        screen.blit(weight_text, (WIDTH - 300, HEIGHT - 130 + HEADER_HEIGHT))
-        screen.blit(step_text, (WIDTH - 300, HEIGHT - 160 + HEADER_HEIGHT))
+
+        # Position each text vertically
+        screen.blit(step_text, (WIDTH - 300, HEIGHT - 220 + HEADER_HEIGHT))
+        screen.blit(weight_text, (WIDTH - 300, HEIGHT - 190 + HEADER_HEIGHT))
+        screen.blit(nodes_text, (WIDTH - 300, HEIGHT - 160 + HEADER_HEIGHT))
+        screen.blit(time_text, (WIDTH - 300, HEIGHT - 130 + HEADER_HEIGHT))
+        screen.blit(memory_text, (WIDTH - 300, HEIGHT - 100 + HEADER_HEIGHT))
 
         # Display navigation exit message
         exit_text = FONT.render("Press ESC to exit", True, (0, 0, 0))
@@ -123,7 +127,6 @@ class Button:
 
     def is_clicked(self, mouse_pos):
         return self.rect.collidepoint(mouse_pos)
-
 
 class MapButton:
     def __init__(self, text, pos):
@@ -152,7 +155,6 @@ class MapButton:
 
     def is_clicked(self, mouse_pos):
         return self.rect.collidepoint(mouse_pos)
-
 
 def draw_arrow_button(screen, direction, pos, mouse_pos):
     arrow_color = HOVER_COLOR if pygame.Rect(pos[0] - 20, pos[1] - 20, 40, 40).collidepoint(mouse_pos) else BUTTON_COLOR

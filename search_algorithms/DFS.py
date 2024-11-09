@@ -1,6 +1,6 @@
 from typing import final
-
 from .search_utility import *
+
 OVER_RECURSION = -1
 def DFS_Search(weights, grid) -> object:
     initial_state = find_initial_state(grid)
@@ -14,7 +14,6 @@ def DFS_Search(weights, grid) -> object:
     else:
         print("No solution found.")
         return None, nodes_generated, time.time() - start_time, tracemalloc.get_traced_memory()[1]
-
 
 def recursive_dfs(current_state, grid, weights, tracemalloc, visited, start_time, nodes_generated):
     # Check if the current state is the goal state
